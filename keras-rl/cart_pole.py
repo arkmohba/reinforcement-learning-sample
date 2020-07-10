@@ -4,6 +4,7 @@ import gym
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Activation, Flatten
 from tensorflow.keras.optimizers import Adam
+import matplotlib.pyplot as plt
 
 from rl.agents.dqn import DQNAgent
 from rl.policy import BoltzmannQPolicy
@@ -56,14 +57,16 @@ def do_train(dqn: DQNAgent, env, save_path):
     # Okay, now it's time to learn something! We visualize the training here for show, but this
     # slows down training quite a lot. You can always safely abort the training prematurely using
     # Ctrl + C.
-    dqn.fit(env, nb_steps=50000, visualize=True, verbose=2)
+    history = dqn.fit(env, nb_steps=200000, visualize=False, verbose=0)
+    history = history.history
 
     # After training is done, we save the final weights.
     dqn.save_weights(save_path, overwrite=True)
 
     # Finally, evaluate our algorithm for 5 episodes.
-    dqn.test(env, nb_episodes=5, visualize=True)
+    # dqn.test(env, nb_episodes=5, visualize=True)
 
+    return history
 
 def demo(dqn: DQNAgent, env, model_path):
     dqn.load_weights(model_path)
@@ -83,9 +86,16 @@ def main():
     dqn = setup_dqn(model, nb_actions)
 
     model_path = "model_{}.h5".format(ENV_NAME)
-    # do_train(dqn, env, model_path)
-
-    demo(dqn, env, model_path)
+    history = do_train(dqn, env, model_path)
+    # print(history)
+    steps = history["nb_steps"]
+    hold_step = history["nb_episode_steps"]
+    rewards = history["episode_reward"]
+    plt.plot(rewards, label="reward")
+    # plt.plot(hold_step, label="hold_steps")
+    plt.legend()
+    plt.show()
+    # demo(dqn, env, model_path)
 
 
 if __name__ == "__main__":
