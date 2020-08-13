@@ -336,7 +336,7 @@ void interaction(Xsdata *xdata) {
                                           //>= num_particles2)){
                         for (;;) {
                           psinteract(&(xdata[pidx]),
-                                     &(xdata[pidx2]));  //—±qŠÔ‘ŠŒİì—p‚ÌŒvZ
+                                     &(xdata[pidx2]));  //ç²’å­é–“ç›¸äº’ä½œç”¨ã®è¨ˆç®—
                           pidx2 = nextOf2[pidx2];
                           if (pidx2 == -1) break;
                         }
@@ -446,7 +446,7 @@ void partupdate(Xsdata *xdata) {
 
 void datainit(Xsdata *xdata) {
   int pidx, i, j, m, l, maxx, maxy, room;
-  double lx, ly, sx, sy;
+  double sx, sy;
 
   /*format of particle datas*/
   srand(time(NULL));
@@ -467,12 +467,12 @@ void datainit(Xsdata *xdata) {
     xdata[pidx].etha =
         (-2 * log(e) * sqrt(xdata[pidx].m * k / (sq(M_PI) + sq(e))));
   }
-  lx = width - 2 * dcell - 2 * rstd1;       //ÀÛ‚Ì‰¡•
-  ly = height - 2 * dcell - 2 * rstd1 - A;  //ÀÛ‚Ìc•
-  maxx = sqrt(lx * num_particles2 / ly);    //‰¡‚É•À‚×‚é—±q‚Ì”
-  maxy = sqrt(ly * num_particles2 / lx);    //c‚É•À‚×‚é—±q‚Ì”
-  sx = lx / maxx;                           //—±q‚ªè‚ß‚é‚˜•
-  sy = ly / maxy;                           //—±q‚ªè‚ß‚é‚™•
+  double lx = width - 2 * dcell - 2 * rstd1;       // å®Ÿéš›ã®æ¨ªå¹…
+  double ly = height - 2 * dcell - 2 * rstd1 - A;  // å®Ÿéš›ã®ç¸¦å¹…
+  maxx = sqrt(lx * num_particles2 / ly);           //æ¨ªã«ä¸¦ã¹ã‚‹ç²’å­ã®æ•°
+  maxy = sqrt(ly * num_particles2 / lx);           //ç¸¦ã«ä¸¦ã¹ã‚‹ç²’å­ã®æ•°
+  sx = lx / maxx;                                  //ç²’å­ãŒå ã‚ã‚‹ï½˜å¹…
+  sy = ly / maxy;                                  //ç²’å­ãŒå ã‚ã‚‹ï½™å¹…
   i = 0;
   j = 0;
   for (pidx = 0; pidx < num_particles2; pidx += 2) {

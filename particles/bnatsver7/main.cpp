@@ -1,4 +1,4 @@
-// bnats2.cpp : ƒRƒ“ƒ\[ƒ‹ ƒAƒvƒŠƒP[ƒVƒ‡ƒ“‚ÌƒGƒ“ƒgƒŠ ƒ|ƒCƒ“ƒg‚ğ’è‹`‚µ‚Ü‚·B
+// bnats2.cpp : ã‚³ãƒ³ã‚½ãƒ¼ãƒ« ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³ã®ã‚¨ãƒ³ãƒˆãƒª ãƒã‚¤ãƒ³ãƒˆã‚’å®šç¾©ã—ã¾ã™ã€‚
 #include <math.h>
 
 #include <cstdio>
@@ -17,13 +17,13 @@ const int SHOW_FOR_EACH = 30;
 //   switch (button) {
 //     case GLUT_LEFT_BUTTON:
 //       if (state == GLUT_DOWN) {
-//         /*ƒAƒjƒ[ƒVƒ‡ƒ“ŠJn*/
+//         /*ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³é–‹å§‹*/
 //         glutIdleFunc(idle);
 //       }
 //       break;
 //     case GLUT_RIGHT_BUTTON:
 //       if (state == GLUT_DOWN) {
-//         /* ƒAƒjƒ[ƒVƒ‡ƒ“’â~*/
+//         /* ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³åœæ­¢*/
 //         glutIdleFunc(0);
 //       }
 //       break;
@@ -54,7 +54,7 @@ void update(Xsdata *xdata, string window_name) {
   static double time = 0;
 
   for (int i = 0; i < SHOW_FOR_EACH; i++) {
-    // °‚ÌƒAƒbƒvƒf[ƒg
+    // åºŠã®ã‚¢ãƒƒãƒ—ãƒ‡ãƒ¼ãƒˆ
     time += dt;
     if (time > 10 / nyu) time = 0;
     base = A * pow(sin(2 * M_PI * nyu * time), 1);
@@ -78,7 +78,7 @@ int main(int argc, char *argv[]) {
     int key;
     update(xdata, window_name);
     key = cv::waitKey(1);
-    // 'Esc'‚ª‰Ÿ‚³‚ê‚½ê‡‚ÉI—¹
+    // 'Esc'ãŒæŠ¼ã•ã‚ŒãŸå ´åˆã«çµ‚äº†
     if (key == 27) break;
   }
 	cv::destroyWindow(window_name);

@@ -29,18 +29,15 @@ void draw_ball_another(cv::Mat img, double x, double y, double r) {
   draw_ball(img, x, y, r, color, thickness);
 }
 
-void rect(cv::Mat img, int x, int y, int w, int h,
-          cv::Scalar color) {
+void rect(cv::Mat img, int x, int y, int w, int h, cv::Scalar color) {
   cv::rectangle(img, cv::Point(x, y), cv::Point(x + w, y + h), color, 3, 4);
 }
 
 cv::Mat udisp(Xsdata *xdata, int particles_num, int height, int width,
               int dcell) {
   // background
-  cv::Mat img =
-      cv::Mat::ones(height, width, CV_8UC3) ; 
-  img = cv::Scalar(255, 255, 255); //��ʂ𔒂œh��Ԃ�
-  int p_idx, i;
+  cv::Mat img = cv::Mat::ones(height, width, CV_8UC3);
+  img = cv::Scalar(255, 255, 255);  //画面を白で塗りつぶし
 
   /*draw walls*/
   rect(img, 0.0, 0.0, dcell, height, COLOR_BLACK);            // left wall
@@ -50,12 +47,12 @@ cv::Mat udisp(Xsdata *xdata, int particles_num, int height, int width,
        COLOR_BLACK);  // bottom
 
   /*draw the particles*/
-  for (p_idx = 1; p_idx < particles_num; p_idx++)
+  for (int p_idx = 1; p_idx < particles_num; p_idx++){
     draw_ball_normal(img, xdata[p_idx].x, xdata[p_idx].y,
                      xdata[p_idx].r);  // display the particles
-
+  }
   // draw the brazil nat.
-  p_idx = 0;
+  int p_idx = 0;
   draw_ball_another(img, xdata[p_idx].x, xdata[p_idx].y, xdata[p_idx].r);
 
   return img;
