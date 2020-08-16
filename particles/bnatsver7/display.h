@@ -2,10 +2,9 @@
 #include <math.h>
 
 #include <cstdlib>
-// #include <GL/glut.h>
 #include <opencv2/opencv.hpp>
 
-#include "culc.h"
+#include "simulator.h"
 
 const cv::Scalar COLOR_BLACK = {0, 0, 0};
 const cv::Scalar COLOR_BLUE = {255, 0, 0};

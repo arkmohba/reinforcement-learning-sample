@@ -5,8 +5,8 @@
 #include <iostream>
 #include <string>
 
-#include "culc.h"
-#include "disp.h"
+#include "simulator.h"
+#include "display.h"
 
 using namespace std;
 
