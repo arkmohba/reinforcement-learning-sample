@@ -4,9 +4,10 @@ set(TARGET "bnatsver7")
 project(${TARGET}  CXX)
 
 # OpenCV
-# set("OpenCVDIR" "F:\\libs\\vcpkg\\packages\\opencv_x64-windows")
 set("OpenCVDIR" "F:\\libs\\opencv\\opencv\\build")
-add_executable(${TARGET} main.cpp)
+
+set(CMAKE_CXX_STANDARD 14)
+add_executable(${TARGET} main.cpp disp.cpp culc.cpp)
 # インクルードパスを指定
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 target_include_directories(
@@ -14,7 +15,7 @@ target_include_directories(
   PRIVATE "${OpenCVDIR}\\include"
 )
 # ライブラリディレクトリの指定
-target_link_directories(${TARGET} PRIVATE "${OpenCVDIR}\\x64\\vc15\\lib\\")
+target_link_directories(${TARGET} PRIVATE "${OpenCVDIR}\\x64\\vc15\\lib\\" )
 
 
 
