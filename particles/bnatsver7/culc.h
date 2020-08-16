@@ -37,7 +37,7 @@ const double rstd1 = 3.0;                // standard radius of particles
 const double Omeg = 40;                  // coefficient of dt
 const double dt = (2 * M_PI * sqrt(mstd / k) / Omeg);  // infinitesimal time
 
-int num_particles3 = num_particles;  // num_particles2 + (int)(height *1.0 / 6 /
+const int num_particles3 = num_particles;  // num_particles2 + (int)(height *1.0 / 6 /
                                      // (rstd2 * 2) + 1);
 double base = 0, base2 = 0;
 
@@ -217,11 +217,13 @@ void psinteract(Xsdata *data1,
     data2->womega += (data2->r * (dx * fny - dy * fnx) / dst);
   }
 }
+
 Particle_cell
     pcell[cellx + 1][celly + 1][divrate + 1]
          [divrate + 1];  // pcell[cellx][celly] is for particles out of walls
 int nextOf[num_particles];
 int nextOf2[num_particles];
+
 void interaction(Xsdata *xdata) {
   int pidx, pidx2, cellidxx, cellidxy, cellidxx2, cellidxy2, cellidxx3,
       cellidxy3;

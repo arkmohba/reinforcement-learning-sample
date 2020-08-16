@@ -13,38 +13,6 @@ int count = 0;
 
 const int SHOW_FOR_EACH = 30;
 
-// void mouse(int button, int state, int x, int y) {
-//   switch (button) {
-//     case GLUT_LEFT_BUTTON:
-//       if (state == GLUT_DOWN) {
-//         /*アニメーション開始*/
-//         glutIdleFunc(idle);
-//       }
-//       break;
-//     case GLUT_RIGHT_BUTTON:
-//       if (state == GLUT_DOWN) {
-//         /* アニメーション停止*/
-//         glutIdleFunc(0);
-//       }
-//       break;
-//     default:
-//       break;
-//   }
-// }
-
-// void keyboard(unsigned char key, int x, int y) {
-//   switch (key) {
-//     case 'q':
-//     case 'Q':
-//     case 'e':
-//     case 'E':
-//     case '\033':
-//       exit(0);
-//     default:
-//       break;
-//   }
-// }
-
 void init(Xsdata *xdata, string window_name) {
   datainit(xdata);
   cv::namedWindow(window_name);
