@@ -77,7 +77,8 @@ void linklistset(Particle_cell pcell[][celly + 1][divrate + 1][divrate + 1],
   }
 }
 
-void wallinteract(Xsdata *xdata, double base, double base2) {  // interaction with walls
+void wallinteract(Xsdata *xdata, double base,
+                  double base2) {  // interaction with walls
   double fp, fn;
   if (xdata->x > width - dcell - xdata->r - base2) {  // with the right wall
     fp = -k * (xdata->x + xdata->r - (width - dcell - base2)) -
@@ -124,53 +125,6 @@ void wallinteract(Xsdata *xdata, double base, double base2) {  // interaction wi
     xdata->wy += fp;
     xdata->wx += fn;
     xdata->womega += xdata->r * fn;
-  }
-}
-
-void psinteract(Xsdata *data1,
-                Xsdata *data2) {  // interaction between two particles
-  double dx, dy, dvx, dvy, vnx, vny, fpx, fpy, fnx, fny, dst;
-  dx = data2->x - data1->x;
-  dy = data2->y - data1->y;
-  dst = hypot(dx, dy);
-
-  if (dst <= (data1->r + data2->r) && dst != 0) {
-    dvx = data2->vx - data1->vx;
-    dvy = data2->vy - data1->vy;
-
-    /*1st particle */
-    fpx = (-k * (data1->r + data2->r - dst) * dx / dst);
-    fpy = (-k * (data1->r + data2->r - dst) * dy / dst);
-    fpx += data1->etha * (dvx * dx + dvy * dy) * dx / dst / dst;
-    fpy += data1->etha * (dvx * dx + dvy * dy) * dy / dst / dst;
-    vnx = (dvx - (dvx * dx + dvy * dy) * dx / dst / dst -
-           data1->r * data1->omega * dy / dst -
-           data2->r * data2->omega * (-dy) / dst);
-    vny = (dvy - (dvx * dx + dvy * dy) * dy / dst / dst +
-           data1->r * data1->omega * dx / dst +
-           data2->r * data2->omega * (-dx) / dst);
-    if (hypot(vnx, vny) == 0)
-      fnx = fny = 0;
-    else {
-      fnx = (hypot(fpx, fpy) * myu * vnx / hypot(vnx, vny));
-      fny = (hypot(fpx, fpy) * myu * vny / hypot(vnx, vny));
-    }
-    data1->wx += fpx + fnx;
-    data1->wy += fpy + fny;
-    data1->womega += -(data1->r * (dx * fny - dy * fnx) / dst);
-
-    /*2nd particle*/
-    fpx = (-k * (data1->r + data2->r - dst) * dx / dst);
-    fpy = (-k * (data1->r + data2->r - dst) * dy / dst);
-    fpx += data2->etha * (dvx * dx + dvy * dy) * dx / dst / dst;
-    fpy += data2->etha * (dvx * dx + dvy * dy) * dy / dst / dst;
-    if (hypot(vnx, vny) != 0) {
-      fnx = (hypot(fpx, fpy) * myu * vnx / hypot(vnx, vny));
-      fny = (hypot(fpx, fpy) * myu * vny / hypot(vnx, vny));
-    }
-    data2->wx -= fpx + fnx;
-    data2->wy -= fpy + fny;
-    data2->womega += (data2->r * (dx * fny - dy * fnx) / dst);
   }
 }
 
@@ -261,7 +215,8 @@ void interaction(Xsdata *xdata, double base, double base2) {
           if (pidx2 !=
               -1) {  //|| !(pidx>=num_particles2 && pidx2>=num_particles2)){
             for (;;) {
-              psinteract(&(xdata[pidx]), &(xdata[pidx2]));
+              xdata[pidx].interact_with(&(xdata[pidx2]));
+              // psinteract(&(xdata[pidx]), &(xdata[pidx2]));
               pidx2 = nextOf[pidx2];
               if (pidx2 == -1) break;
             }
@@ -287,8 +242,10 @@ void interaction(Xsdata *xdata, double base, double base2) {
                       if (pidx2 != -1) {  //|| !(pidx >= num_particles2 && pidx2
                                           //>= num_particles2)){
                         for (;;) {
-                          psinteract(&(xdata[pidx]),
-                                     &(xdata[pidx2]));  //粒子間相互作用の計算
+                          //粒子間相互作用の計算
+                          xdata[pidx].interact_with(&(xdata[pidx2]));
+                          // psinteract(&(xdata[pidx]),
+                          //            &(xdata[pidx2]));
                           pidx2 = nextOf2[pidx2];
                           if (pidx2 == -1) break;
                         }
@@ -310,7 +267,9 @@ void interaction(Xsdata *xdata, double base, double base2) {
                       if (pidx2 != -1) {  // || !(pidx >= num_particles2 &&
                                           // pidx2 >= num_particles2)){
                         for (;;) {
-                          psinteract(&(xdata[pidx]), &(xdata[pidx2]));
+                          //粒子間相互作用の計算
+                          xdata[pidx].interact_with(&(xdata[pidx2]));
+                          // psinteract(&(xdata[pidx]), &(xdata[pidx2]));
                           pidx2 = nextOf2[pidx2];
                           if (pidx2 == -1) break;
                         }
@@ -331,7 +290,9 @@ void interaction(Xsdata *xdata, double base, double base2) {
                       if (pidx2 != -1) {  //|| !(pidx >= num_particles2 && pidx2
                                           //>= num_particles2)){
                         for (;;) {
-                          psinteract(&(xdata[pidx]), &(xdata[pidx2]));
+                          //粒子間相互作用の計算
+                          xdata[pidx].interact_with(&(xdata[pidx2]));
+                          // psinteract(&(xdata[pidx]), &(xdata[pidx2]));
                           pidx2 = nextOf2[pidx2];
                           if (pidx2 == -1) break;
                         }
@@ -352,7 +313,9 @@ void interaction(Xsdata *xdata, double base, double base2) {
                       if (pidx2 != -1) {  // ||!(pidx >= num_particles2 && pidx2
                                           // >= num_particles2)){
                         for (;;) {
-                          psinteract(&xdata[pidx], &(xdata[pidx2]));
+                          //粒子間相互作用の計算
+                          xdata[pidx].interact_with(&(xdata[pidx2]));
+                          // psinteract(&xdata[pidx], &(xdata[pidx2]));
                           pidx2 = nextOf2[pidx2];
                           if (pidx2 == -1) break;
                         }
@@ -385,48 +348,30 @@ double drandom(double first, double end) {
 void partupdate(Xsdata *xdata) {
   int pidx;
   for (pidx = 0; pidx < num_particles2; pidx++) {
-    xdata[pidx].x += xdata[pidx].vx * dt;
-    xdata[pidx].y += xdata[pidx].vy * dt;
-    xdata[pidx].vx += xdata[pidx].wx * dt / xdata[pidx].m;
-    xdata[pidx].vy += xdata[pidx].wy * dt / xdata[pidx].m;
-    xdata[pidx].th += xdata[pidx].omega * dt;
-    xdata[pidx].omega += xdata[pidx].womega * dt / xdata[pidx].I;
+    xdata[pidx].update(dt);
   }
 }
 
-double sq(double x) { return (x * x); }
-
 void datainit(Xsdata *xdata, double base, double base2) {
-  int pidx, i, j, m, l, maxx, maxy, room;
+  int pidx, i, j, maxx, maxy;
   double sx, sy;
 
   /*format of particle datas*/
-  srand(time(NULL));
+  srand(static_cast<unsigned int>(time(NULL)));
   for (pidx = 0; pidx < num_particles2; pidx++) {
-    xdata[pidx].m = mstd;
-    xdata[pidx].r = rstd1;
-    xdata[pidx].I = (xdata[pidx].r * xdata[pidx].r * xdata[pidx].m / 2.);
-    // xdata[pidx].x = dcell + xdata[pidx].r + drandom(0.0, 1.0)*(width - 2 *
-    // dcell - 2 * xdata[pidx].r); xdata[pidx].y = dcell + xdata[pidx].r +
-    // drandom(0.0, 1.0)*(height - 2 * dcell - 2 * xdata[pidx].r - 2 * rstd2);
+    xdata[pidx].init(mstd, rstd1);
     xdata[pidx].vx = (drandom(-0.5, 0.5)) * 10;
     xdata[pidx].vy = (drandom(-0.5, 0.5)) * 10;
-    xdata[pidx].omega = 0;
-    xdata[pidx].wx = 0;
-    xdata[pidx].wy = 0;
-    xdata[pidx].womega = 0;
-    xdata[pidx].th = 0;
-    xdata[pidx].etha =
-        (-2 * log(e) * sqrt(xdata[pidx].m * k / (sq(M_PI) + sq(e))));
   }
-  double lx = width - 2 * dcell - 2 * rstd1;       // 実際の横幅
-  double ly = height - 2 * dcell - 2 * rstd1 - A;  // 実際の縦幅
-  maxx = sqrt(lx * num_particles2 / ly);           //横に並べる粒子の数
-  maxy = sqrt(ly * num_particles2 / lx);           //縦に並べる粒子の数
-  sx = lx / maxx;                                  //粒子が占めるｘ幅
-  sy = ly / maxy;                                  //粒子が占めるｙ幅
+  double lx = width - 2 * dcell - 2 * rstd1;                // 実際の横幅
+  double ly = height - 2 * dcell - 2 * rstd1 - A;           // 実際の縦幅
+  maxx = static_cast<int>(sqrt(lx * num_particles2 / ly));  //横に並べる粒子の数
+  maxy = static_cast<int>(sqrt(ly * num_particles2 / lx));  //縦に並べる粒子の数
+  sx = lx / maxx;  //粒子が占めるｘ幅
+  sy = ly / maxy;  //粒子が占めるｙ幅
   i = 0;
   j = 0;
+  // 下から上に向かって左右均等に配置
   for (pidx = 0; pidx < num_particles2; pidx += 2) {
     xdata[pidx].x = dcell + xdata[pidx].r + sx * i;
     xdata[pidx].y = dcell + xdata[pidx].r + sy * j;
@@ -438,42 +383,15 @@ void datainit(Xsdata *xdata, double base, double base2) {
       j++;
     }
   }
+  // ブラジルナッツ本体は再設定
   pidx = 0;
-  xdata[pidx].m = mstd2;
-  xdata[pidx].r = rstd2;
-  xdata[pidx].I = (xdata[pidx].r * xdata[pidx].r * xdata[pidx].m / 2.);
+  xdata[pidx].init(mstd2, rstd2);
   xdata[pidx].x = width / 2.0;
   xdata[pidx].y = height - (dcell + xdata[pidx].r + base);
   xdata[pidx].vx = 0;  //(drandom(-0.5, 0.5)) * 10;
   xdata[pidx].vy = 0;  //(drandom(-0.5, 0.5)) * 10;
-  xdata[pidx].omega = 0;
-  xdata[pidx].wx = 0;
-  xdata[pidx].wy = 0;
-  xdata[pidx].womega = 0;
-  xdata[pidx].th = 0;
-  xdata[pidx].etha =
-      (-2 * log(e) * sqrt(xdata[pidx].m * k / (sq(M_PI) + sq(e))));
 
-  /*for (room = 1; room < num_room; room++){
-          for (int pidx2 = 0; pidx2 < wallball; pidx2++){
-                  pidx = pidx2 + num_particles2 + (room - 1)*wallball;
-                  xdata[pidx].m = mstd;
-                  xdata[pidx].r = rstd2;
-                  xdata[pidx].I = (xdata[pidx].r*xdata[pidx].r*xdata[pidx].m
-  / 2.); xdata[pidx].x = dcell + (width - 2 * dcell) *room / num_room;
-                  xdata[pidx].y = height - pidx2 * rstd2 * 2 - rstd2;
-                  xdata[pidx].vx = 0;
-                  xdata[pidx].vy = 0;
-                  xdata[pidx].omega = 0;
-                  xdata[pidx].wx = 0;
-                  xdata[pidx].wy = 0;
-                  xdata[pidx].womega = 0;
-                  xdata[pidx].th = 0;
-                  xdata[pidx].etha = (-2 * log(e)*sqrt(xdata[pidx].m * k /
-  (sq(M_PI) + sq(e))));
-
-          }
-  }*/
+  // 最初に少し動かして地面に着かせる
   for (i = 0; i < 7000; i++) {
     interaction(xdata, base, base2);
     partupdate(xdata);
