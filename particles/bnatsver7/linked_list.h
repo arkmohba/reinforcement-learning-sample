@@ -20,12 +20,6 @@ class CellIndex {
 
 class LinkedList {
  private:
-  //   Particle_cell
-  //     pcell[cellx + 1][celly + 1][divrate + 1]
-  //          [divrate + 1];  // pcell[cellx][celly] is for particles out of
-  //          walls
-  // int nextOf[num_particles];
-  // int nextOf2[num_particles];
   ParticleCell *pcell;
   int *nextOf;        // nextof particle index in the cell
   int *nextOf2;       // nextof particle index in the divided cell

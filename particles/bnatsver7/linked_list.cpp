@@ -21,7 +21,6 @@ LinkedList::LinkedList(int n_cell_x_, int n_cell_y_, int divrate_,
   nextOf2 = new int[num_particles];
 
   // セルインデックス計算の係数
-  // pcell=int[ncellx][ncelly][divrate][divrate]
   index_coeff3_ = divrate_real;
   index_coeff2_ = index_coeff3_ * divrate_real;
   index_coeff1_ = index_coeff2_ * n_cell_y_real;
@@ -49,9 +48,9 @@ CellIndex LinkedList::getcellidx(double x, double y) {
 
   } else {  // inside of wall
     mx = (int)(x / cell_size * divrate) -
-         nx * divrate;  // width * (cellx - 1)*divrate) - nx*divrate;
+         nx * divrate;
     my = (int)(y / cell_size * divrate) -
-         ny * divrate;  // height * (celly-1)*divrate) -ny* divrate;
+         ny * divrate;
   }
   CellIndex cell_idx(nx, ny, mx, my);
   return cell_idx;

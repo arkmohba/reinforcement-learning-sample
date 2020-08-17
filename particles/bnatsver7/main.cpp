@@ -20,13 +20,10 @@ void init(Xsdata *xdata, double base, double base2, string window_name, LinkedLi
 
 void update(Xsdata *xdata, double &t, double &base, double &base2, LinkedList* l_list,
             string window_name) {
-  // static double time = 0;
 
   for (int i = 0; i < SHOW_FOR_EACH; i++) {
     // 床のアップデート
-    // t;
     t = t + dt;
-    // cout << t << endl;
     if (t > 10 / nyu) t = 0;
     base = A * pow(sin(2 * M_PI * nyu * t), 1);
 
