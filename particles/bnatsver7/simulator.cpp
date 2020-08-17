@@ -113,7 +113,7 @@ void interaction(Xsdata *xdata, double base, double base2, LinkedList *l_list) {
       if (pidx != -1) {
         for (;;) {
           wallinteract(&(xdata[pidx]), base, base2);
-        pidx = l_list->next_in_cell(pidx);
+          pidx = l_list->next_in_cell(pidx);
           if (pidx == -1) break;
         }
       }
@@ -126,7 +126,7 @@ void interaction(Xsdata *xdata, double base, double base2, LinkedList *l_list) {
       if (pidx != -1) {
         for (;;) {
           wallinteract(&(xdata[pidx]), base, base2);
-        pidx = l_list->next_in_cell(pidx);
+          pidx = l_list->next_in_cell(pidx);
           if (pidx == -1) break;
         }
       }
@@ -140,34 +140,36 @@ void interaction(Xsdata *xdata, double base, double base2, LinkedList *l_list) {
       if (pidx != -1) {
         for (;;) {
           // paricles' interaction with own cell
-          pidx2 =l_list->next_in_cell(pidx);  
-          if (pidx2 !=
-              -1) {
+          pidx2 = l_list->next_in_cell(pidx);
+          if (pidx2 != -1) {
             for (;;) {
               xdata[pidx].interact_with(&(xdata[pidx2]));
               pidx2 = l_list->next_in_cell(pidx2);
               if (pidx2 == -1) break;
             }
           }
-          pidx =l_list->next_in_cell(pidx);
+          pidx = l_list->next_in_cell(pidx);
           if (pidx == -1) break;
         }
 
         /*particles' interaction with next cell*/
         for (cellidxx2 = 0; cellidxx2 < divrate; cellidxx2++) {
           for (cellidxy2 = 0; cellidxy2 < divrate; cellidxy2++) {
-            pidx = l_list->getPCell(cellidxx, cellidxy,cellidxx2, cellidxy2).first;
+            pidx = l_list->getPCell(cellidxx, cellidxy, cellidxx2, cellidxy2)
+                       .first;
             if (pidx != -1) {
               for (;;) {
                 // paricles' interaction with right cell
-                pidx2 = l_list->getPCell(cellidxx + 1, cellidxy, divrate, divrate)
-                            .first;  
+                pidx2 =
+                    l_list->getPCell(cellidxx + 1, cellidxy, divrate, divrate)
+                        .first;
                 if (pidx2 != -1) {
                   for (cellidxx3 = 0; cellidxx3 <= cellidxx2; cellidxx3++) {
                     for (cellidxy3 = 0; cellidxy3 < divrate; cellidxy3++) {
-                      pidx2 =
-                          l_list->getPCell(cellidxx + 1, cellidxy, cellidxx3, cellidxy3)
-                              .first;
+                      pidx2 = l_list
+                                  ->getPCell(cellidxx + 1, cellidxy, cellidxx3,
+                                             cellidxy3)
+                                  .first;
                       if (pidx2 != -1) {
                         for (;;) {
                           //粒子間相互作用の計算
@@ -180,13 +182,18 @@ void interaction(Xsdata *xdata, double base, double base2, LinkedList *l_list) {
                   }
                 }
                 // paricles' interaction with the left below cell
-                pidx2 = l_list->getPCell(cellidxx - 1, cellidxy + 1, divrate, divrate)
-                            .first;  
+                pidx2 =
+                    l_list
+                        ->getPCell(cellidxx - 1, cellidxy + 1, divrate, divrate)
+                        .first;
                 if (pidx2 != -1) {
                   for (cellidxx3 = cellidxx2; cellidxx3 < divrate;
                        cellidxx3++) {
                     for (cellidxy3 = 0; cellidxy3 <= cellidxy2; cellidxy3++) {
-                      pidx2 = l_list->getPCell(cellidxx - 1, cellidxy + 1, cellidxx3, cellidxy3).first;
+                      pidx2 = l_list
+                                  ->getPCell(cellidxx - 1, cellidxy + 1,
+                                             cellidxx3, cellidxy3)
+                                  .first;
                       if (pidx2 != -1) {
                         for (;;) {
                           //粒子間相互作用の計算
@@ -205,9 +212,10 @@ void interaction(Xsdata *xdata, double base, double base2, LinkedList *l_list) {
                 if (pidx2 != -1) {
                   for (cellidxx3 = 0; cellidxx3 < divrate; cellidxx3++) {
                     for (cellidxy3 = 0; cellidxy3 <= cellidxy2; cellidxy3++) {
-                      pidx2 =
-                          l_list->getPCell(cellidxx, cellidxy + 1, cellidxx3, cellidxy3)
-                              .first;
+                      pidx2 = l_list
+                                  ->getPCell(cellidxx, cellidxy + 1, cellidxx3,
+                                             cellidxy3)
+                                  .first;
                       if (pidx2 != -1) {
                         for (;;) {
                           //粒子間相互作用の計算
@@ -220,13 +228,17 @@ void interaction(Xsdata *xdata, double base, double base2, LinkedList *l_list) {
                   }
                 }
                 // paricles' interaction with the right below cell
-                pidx2 = l_list->getPCell(cellidxx + 1, cellidxy + 1, divrate, divrate)
-                            .first;  
+                pidx2 =
+                    l_list
+                        ->getPCell(cellidxx + 1, cellidxy + 1, divrate, divrate)
+                        .first;
                 if (pidx2 != -1) {
                   for (cellidxx3 = 0; cellidxx3 <= cellidxx2; cellidxx3++) {
                     for (cellidxy3 = 0; cellidxy3 <= cellidxy2; cellidxy3++) {
-                      pidx2 = l_list->getPCell(cellidxx + 1, cellidxy + 1, cellidxx3, cellidxy3)
-                                       .first;
+                      pidx2 = l_list
+                                  ->getPCell(cellidxx + 1, cellidxy + 1,
+                                             cellidxx3, cellidxy3)
+                                  .first;
                       if (pidx2 != -1) {
                         for (;;) {
                           //粒子間相互作用の計算
