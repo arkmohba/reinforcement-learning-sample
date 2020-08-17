@@ -5,22 +5,22 @@
 #include <iostream>
 #include <string>
 
-#include "simulator.h"
 #include "display.h"
 #include "linked_list.h"
+#include "simulator.h"
 
 using namespace std;
 
 const int SHOW_FOR_EACH = 30;
 
-void init(Xsdata *xdata, double base, double base2, string window_name, LinkedList *l_list) {
+void init(Xsdata *xdata, double base, double base2, string window_name,
+          LinkedList *l_list) {
   datainit(xdata, base, base2, l_list);
   cv::namedWindow(window_name);
 }
 
-void update(Xsdata *xdata, double &t, double &base, double &base2, LinkedList* l_list,
-            string window_name) {
-
+void update(Xsdata *xdata, double &t, double &base, double &base2,
+            LinkedList *l_list, string window_name) {
   for (int i = 0; i < SHOW_FOR_EACH; i++) {
     // 床のアップデート
     t = t + dt;
@@ -37,7 +37,8 @@ void update(Xsdata *xdata, double &t, double &base, double &base2, LinkedList* l
 
 int main(int argc, char *argv[]) {
   Xsdata *xdata = new Xsdata[num_particles];
-  LinkedList * l_list = new LinkedList(cellx, celly, divrate, num_particles, dcell);
+  LinkedList *l_list =
+      new LinkedList(cellx, celly, divrate, num_particles, dcell);
   string window_name = "";
   double base, base2, t;
   base = 0;

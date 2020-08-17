@@ -7,8 +7,8 @@
 #include <cstdlib>
 #include <ctime>
 
-#include "physics_constants.h"
 #include "linked_list.h"
+#include "physics_constants.h"
 
 const int divrate = 4;  // deviding rate
 
@@ -25,7 +25,7 @@ const int dcell =
 const double mstd2 = 8.0;
 const double rstd2 = 5.0;
 const int num_particles2 = 500;  // number of particles
-const int wallball = 0;          //(int)(height *1.0/5 /(rstd2*2)+1)
+const int wallball = 0;          // (int)(height *1.0/5 /(rstd2*2)+1)
 const int num_room = 1;
 
 const int num_particles = num_particles2;
@@ -38,7 +38,6 @@ const double Omeg = 40;                  // coefficient of dt
 const double dt = (2 * M_PI * sqrt(mstd / k) / Omeg);  // infinitesimal time
 
 const int num_particles3 = num_particles;
-
 
 void wallinteract(Xsdata *xdata);
 

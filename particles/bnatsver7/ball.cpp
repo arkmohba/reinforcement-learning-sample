@@ -1,8 +1,9 @@
-#include "ball.h"
-
-#include "physics_constants.h"
 #define _USE_MATH_DEFINES
+
 #include <math.h>
+
+#include "/ball.h"
+#include "/physics_constants.h"
 
 void Xsdata::init(double m_, double r_) {
   m = m_;

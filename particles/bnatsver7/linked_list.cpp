@@ -47,10 +47,8 @@ CellIndex LinkedList::getcellidx(double x, double y) {
     my = divrate;
 
   } else {  // inside of wall
-    mx = (int)(x / cell_size * divrate) -
-         nx * divrate;
-    my = (int)(y / cell_size * divrate) -
-         ny * divrate;
+    mx = (int)(x / cell_size * divrate) - nx * divrate;
+    my = (int)(y / cell_size * divrate) - ny * divrate;
   }
   CellIndex cell_idx(nx, ny, mx, my);
   return cell_idx;
@@ -91,7 +89,7 @@ void LinkedList::linked_list_set(Xsdata* part) {
     lastPrev = cell_internal.last;
     // update cell's
     cell_internal.last = pidx;
-    
+
     // last
     if (lastPrev == -1)
       // if there is not the last particle of the cell before update

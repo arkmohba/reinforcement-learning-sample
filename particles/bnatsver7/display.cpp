@@ -1,4 +1,5 @@
 #include "display.h"
+
 #include <opencv2/opencv.hpp>
 
 void draw_ball(cv::Mat img, int x, int y, int r, cv::Scalar color,
