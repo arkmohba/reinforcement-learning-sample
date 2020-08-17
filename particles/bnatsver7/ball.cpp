@@ -2,8 +2,8 @@
 
 #include <math.h>
 
-#include "/ball.h"
-#include "/physics_constants.h"
+#include "ball.h"
+#include "physics_constants.h"
 
 void Xsdata::init(double m_, double r_) {
   m = m_;
