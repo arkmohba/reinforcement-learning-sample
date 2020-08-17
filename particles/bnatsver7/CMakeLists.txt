@@ -7,7 +7,7 @@ project(${TARGET}  CXX)
 set("OpenCVDIR" "F:\\libs\\opencv\\opencv\\build")
 
 set(CMAKE_CXX_STANDARD 14)
-add_executable(${TARGET} main.cpp display.cpp simulator.cpp ball.cpp)
+add_executable(${TARGET} main.cpp display.cpp simulator.cpp ball.cpp linked_list.cpp)
 # インクルードパスを指定
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 target_include_directories(

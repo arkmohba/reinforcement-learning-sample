@@ -8,6 +8,7 @@
 #include <ctime>
 
 #include "physics_constants.h"
+#include "linked_list.h"
 
 const int divrate = 4;  // deviding rate
 
@@ -39,24 +40,17 @@ const double dt = (2 * M_PI * sqrt(mstd / k) / Omeg);  // infinitesimal time
 const int num_particles3 = num_particles;  // num_particles2 + (int)(height *1.0
                                            // / 6 / (rstd2 * 2) + 1);
 
-typedef struct {
-  int first, last;
-} Particle_cell;
-typedef struct {
-  int nx, ny, mx, my;
-} Cellvec;
+// CellIndex getcellidx(double x, double y);
 
-Cellvec getcellidx(double x, double y);
-
-void linklistset(Particle_cell pcell[][celly + 1][divrate + 1][divrate + 1],
-                 Xsdata *part, int *nextof, int *nextof2);
+// void linklistset(ParticleCell pcell[][celly + 1][divrate + 1][divrate + 1],
+//                  Xsdata *part, int *nextof, int *nextof2);
 
 void wallinteract(Xsdata *xdata);
 
-void interaction(Xsdata *xdata, double base, double base2);
+void interaction(Xsdata *xdata, double base, double base2, LinkedList *l_list);
 
 double drandom(double first, double end);
 
 void partupdate(Xsdata *xdata);
 
-void datainit(Xsdata *xdata, double base, double base2);
+void datainit(Xsdata *xdata, double base, double base2, LinkedList *l_list);
