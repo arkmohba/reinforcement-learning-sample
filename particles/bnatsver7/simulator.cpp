@@ -1,7 +1,11 @@
 #pragma once
 #include "simulator.h"
 
+#include <iostream>
+
 #include "linked_list.h"
+
+using namespace std;
 
 void wallinteract(Xsdata *xdata, double base,
                   double base2) {  // interaction with walls
@@ -68,67 +72,15 @@ void interaction(Xsdata *xdata, double base, double base2, LinkedList *l_list) {
   }
 
   /*interaction with the walls*/
-  cellidxy = 0;
-  for (cellidxx = 0; cellidxx <= cellx; cellidxx++) {  // with upper wall
-    pidx = l_list->getPCell(cellidxx, cellidxy, divrate, divrate).first;
+  vector<ParticleCell *> &near_wall_cells = l_list->get_near_wall_cell();
+  for (ParticleCell *pcell : near_wall_cells) {
+    pidx = pcell->first;
+    // cout << pidx << endl;
     if (pidx != -1) {
       for (;;) {
         wallinteract(&(xdata[pidx]), base, base2);
         pidx = l_list->next_in_cell(pidx);
         if (pidx == -1) break;
-      }
-    }
-    pidx = l_list->getPCell(cellidxx, cellidxy + 1, divrate, divrate).first;
-    if (pidx != -1) {
-      for (;;) {
-        wallinteract(&(xdata[pidx]), base, base2);
-        pidx = l_list->next_in_cell(pidx);
-        if (pidx == -1) break;
-      }
-    }
-  }
-  for (cellidxy = 1; cellidxy <= celly * 3 / 4;
-       cellidxy++) {  // with lefft the wall
-    pidx = l_list->getPCell(0, cellidxy, divrate, divrate).first;
-    if (pidx != -1) {
-      for (;;) {
-        wallinteract(&(xdata[pidx]), base, base2);
-        pidx = l_list->next_in_cell(pidx);
-        if (pidx == -1) break;
-      }
-    }
-    pidx = l_list->getPCell(1, cellidxy, divrate, divrate).first;
-    if (pidx != -1) {
-      for (;;) {
-        wallinteract(&(xdata[pidx]), base, base2);
-        pidx = l_list->next_in_cell(pidx);
-        if (pidx == -1) break;
-      }
-    }
-  }
-  for (cellidxy = 1; cellidxy <= celly * 3 / 4;
-       cellidxy++) {  // with the right wall
-    for (int i = 0; i <= 3; i++) {
-      pidx = l_list->getPCell(cellx - i, cellidxy, divrate, divrate).first;
-      if (pidx != -1) {
-        for (;;) {
-          wallinteract(&(xdata[pidx]), base, base2);
-          pidx = l_list->next_in_cell(pidx);
-          if (pidx == -1) break;
-        }
-      }
-    }
-  }
-
-  for (cellidxx = 0; cellidxx <= cellx; cellidxx++) {  // with the base
-    for (cellidxy = celly * 3 / 4; cellidxy <= celly; cellidxy++) {
-      pidx = l_list->getPCell(cellidxx, cellidxy, divrate, divrate).first;
-      if (pidx != -1) {
-        for (;;) {
-          wallinteract(&(xdata[pidx]), base, base2);
-          pidx = l_list->next_in_cell(pidx);
-          if (pidx == -1) break;
-        }
       }
     }
   }
@@ -172,7 +124,7 @@ void interaction(Xsdata *xdata, double base, double base2, LinkedList *l_list) {
                                   .first;
                       if (pidx2 != -1) {
                         for (;;) {
-                          //粒子間相互作用の計算
+                          // 粒子間相互作用の計算
                           xdata[pidx].interact_with(&(xdata[pidx2]));
                           pidx2 = l_list->next_in_divcell(pidx2);
                           if (pidx2 == -1) break;
@@ -196,7 +148,7 @@ void interaction(Xsdata *xdata, double base, double base2, LinkedList *l_list) {
                                   .first;
                       if (pidx2 != -1) {
                         for (;;) {
-                          //粒子間相互作用の計算
+                          // 粒子間相互作用の計算
                           xdata[pidx].interact_with(&(xdata[pidx2]));
                           pidx2 = l_list->next_in_divcell(pidx2);
                           if (pidx2 == -1) break;
@@ -218,7 +170,7 @@ void interaction(Xsdata *xdata, double base, double base2, LinkedList *l_list) {
                                   .first;
                       if (pidx2 != -1) {
                         for (;;) {
-                          //粒子間相互作用の計算
+                          // 粒子間相互作用の計算
                           xdata[pidx].interact_with(&(xdata[pidx2]));
                           pidx2 = l_list->next_in_divcell(pidx2);
                           if (pidx2 == -1) break;
@@ -241,7 +193,7 @@ void interaction(Xsdata *xdata, double base, double base2, LinkedList *l_list) {
                                   .first;
                       if (pidx2 != -1) {
                         for (;;) {
-                          //粒子間相互作用の計算
+                          // 粒子間相互作用の計算
                           xdata[pidx].interact_with(&(xdata[pidx2]));
                           pidx2 = l_list->next_in_divcell(pidx2);
                           if (pidx2 == -1) break;
@@ -294,10 +246,10 @@ void datainit(Xsdata *xdata, double base, double base2, LinkedList *l_list) {
   // 下から上に向かって左右均等に配置
   double lx = width - 2 * dcell - 2 * rstd1;                // 実際の横幅
   double ly = height - 2 * dcell - 2 * rstd1 - A;           // 実際の縦幅
-  maxx = static_cast<int>(sqrt(lx * num_particles2 / ly));  //横に並べる粒子の数
-  maxy = static_cast<int>(sqrt(ly * num_particles2 / lx));  //縦に並べる粒子の数
-  sx = lx / maxx;  //粒子が占めるｘ幅
-  sy = ly / maxy;  //粒子が占めるｙ幅
+  maxx = static_cast<int>(sqrt(lx * num_particles2 / ly));  // 横に並べる粒子の数
+  maxy = static_cast<int>(sqrt(ly * num_particles2 / lx));  // 縦に並べる粒子の数
+  sx = lx / maxx;  // 粒子が占めるｘ幅
+  sy = ly / maxy;  // 粒子が占めるｙ幅
   i = 0;
   j = 0;
   for (pidx = 0; pidx < num_particles2; pidx += 2) {
@@ -316,12 +268,6 @@ void datainit(Xsdata *xdata, double base, double base2, LinkedList *l_list) {
   xdata[pidx].init(mstd2, rstd2);
   xdata[pidx].x = width / 2.0;
   xdata[pidx].y = height - (dcell + xdata[pidx].r + base);
-  xdata[pidx].vx = 0;  //(drandom(-0.5, 0.5)) * 10;
-  xdata[pidx].vy = 0;  //(drandom(-0.5, 0.5)) * 10;
-
-  // 最初に少し動かして地面に着かせる
-  for (i = 0; i < 7000; i++) {
-    interaction(xdata, base, base2, l_list);
-    partupdate(xdata);
-  }
+  xdata[pidx].vx = 0;
+  xdata[pidx].vy = 0;
 }

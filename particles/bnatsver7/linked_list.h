@@ -1,5 +1,8 @@
 
 #pragma once
+
+#include <vector>
+
 #include "ball.h"
 
 typedef struct {
@@ -37,6 +40,8 @@ class LinkedList {
   int index_coeff2_;  // セル番号計算の係数
   int index_coeff3_;  // セル番号計算の係数
 
+  std::vector<ParticleCell*> near_wall_cells;
+
  public:
   LinkedList(int n_cell_x_, int n_cell_y_, int divrate_, int num_particles_,
              int cell_size_);
@@ -46,5 +51,8 @@ class LinkedList {
   int next_in_divcell(int pidx) { return nextOf2[pidx]; }
   void linked_list_set(Xsdata* balls);
   CellIndex getcellidx(double x, double y);
+
+  std::vector<ParticleCell*>& get_near_wall_cell() { return near_wall_cells; }
+  void set_near_wall_cell();
   ~LinkedList();
 };

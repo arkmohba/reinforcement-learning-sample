@@ -24,6 +24,9 @@ LinkedList::LinkedList(int n_cell_x_, int n_cell_y_, int divrate_,
   index_coeff3_ = divrate_real;
   index_coeff2_ = index_coeff3_ * divrate_real;
   index_coeff1_ = index_coeff2_ * n_cell_y_real;
+
+  // 壁際のセルを事前に登録
+  set_near_wall_cell();
 }
 
 ParticleCell& LinkedList::getPCell(int nx, int ny, int mx, int my) {
@@ -98,6 +101,38 @@ void LinkedList::linked_list_set(Xsdata* part) {
     else
       // if there is,save the particle as the next.
       nextOf2[lastPrev] = pidx;
+  }
+}
+
+void LinkedList::set_near_wall_cell() {
+  /*interaction with the walls*/
+  // with upper wall
+  for (int cellidxx = 0; cellidxx < 2; cellidxx++) {
+    for (int cellidxy = 0; cellidxy < 2; cellidxy++) {
+      ParticleCell* pcell_p = &getPCell(cellidxx, cellidxy, divrate, divrate);
+      near_wall_cells.push_back(pcell_p);
+    }
+  }
+  // with lefft the wall
+  for (int cellidxx = 0; cellidxx < 2; cellidxx++) {
+    for (int cellidxy = 1; cellidxy <= n_cell_y * 3 / 4; cellidxy++) {
+      ParticleCell* pcell_p = &getPCell(cellidxx, cellidxy, divrate, divrate);
+      near_wall_cells.push_back(pcell_p);
+    }
+  }
+  // with the right wall
+  for (int cellidxx = n_cell_x - 3; cellidxx <= n_cell_x; cellidxx++) {
+    for (int cellidxy = 1; cellidxy <= n_cell_y * 3 / 4; cellidxy++) {
+      ParticleCell* pcell_p = &getPCell(cellidxx, cellidxy, divrate, divrate);
+      near_wall_cells.push_back(pcell_p);
+    }
+  }
+
+  for (int cellidxx = 0; cellidxx <= n_cell_x; cellidxx++) {  // with the base
+    for (int cellidxy = n_cell_y * 3 / 4; cellidxy <= n_cell_y; cellidxy++) {
+      ParticleCell* pcell_p = &getPCell(cellidxx, cellidxy, divrate, divrate);
+      near_wall_cells.push_back(pcell_p);
+    }
   }
 }
 

@@ -39,6 +39,17 @@ const double dt = (2 * M_PI * sqrt(mstd / k) / Omeg);  // infinitesimal time
 
 const int num_particles3 = num_particles;
 
+class Oscillator {
+ private:
+  double t, A, nyu;
+
+ public:
+  Oscillator(double A_, double nyu_) : A(A_), nyu(nyu_), t(0) {}
+  void update(double dt) { t += dt; }
+  double base_diff() { return A * pow(sin(2 * M_PI * nyu * t), 1); }
+  double base_diff2() { return 0; }
+};
+
 void wallinteract(Xsdata *xdata);
 
 void interaction(Xsdata *xdata, double base, double base2, LinkedList *l_list);
