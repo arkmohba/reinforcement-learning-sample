@@ -88,125 +88,115 @@ void interaction(Xsdata *xdata, double base, double base2, LinkedList *l_list) {
   /*particles' interaction*/
   for (cellidxx = 1; cellidxx < cellx; cellidxx++) {
     for (cellidxy = 1; cellidxy < celly; cellidxy++) {
+      // particles' interaction with own cell
       pidx = l_list->getPCell(cellidxx, cellidxy, divrate, divrate).first;
-      if (pidx != -1) {
-        for (;;) {
-          // paricles' interaction with own cell
-          pidx2 = l_list->next_in_cell(pidx);
-          if (pidx2 != -1) {
-            for (;;) {
-              xdata[pidx].interact_with(&(xdata[pidx2]));
-              pidx2 = l_list->next_in_cell(pidx2);
-              if (pidx2 == -1) break;
-            }
+      if (pidx == -1) continue;  // セル内に粒子がいなければスキップ
+      for (;;) {
+        pidx2 = l_list->next_in_cell(pidx);
+        if (pidx2 != -1) {
+          for (;;) {
+            xdata[pidx].interact_with(&(xdata[pidx2]));
+            pidx2 = l_list->next_in_cell(pidx2);
+            if (pidx2 == -1) break;
           }
-          pidx = l_list->next_in_cell(pidx);
-          if (pidx == -1) break;
         }
+        pidx = l_list->next_in_cell(pidx);
+        if (pidx == -1) break;
+      }
 
-        /*particles' interaction with next cell*/
-        for (cellidxx2 = 0; cellidxx2 < divrate; cellidxx2++) {
-          for (cellidxy2 = 0; cellidxy2 < divrate; cellidxy2++) {
-            pidx = l_list->getPCell(cellidxx, cellidxy, cellidxx2, cellidxy2)
-                       .first;
-            if (pidx != -1) {
-              for (;;) {
-                // paricles' interaction with right cell
-                pidx2 =
-                    l_list->getPCell(cellidxx + 1, cellidxy, divrate, divrate)
+      /*particles' interaction with next cell*/
+      for (cellidxx2 = 0; cellidxx2 < divrate; cellidxx2++) {
+        for (cellidxy2 = 0; cellidxy2 < divrate; cellidxy2++) {
+          pidx =
+              l_list->getPCell(cellidxx, cellidxy, cellidxx2, cellidxy2).first;
+          if (pidx == -1) continue;  // 分割セル内に粒子がいなければスキップ
+          for (;;) {
+            // paricles' interaction with right cell
+            pidx2 = l_list->getPCell(cellidxx + 1, cellidxy, divrate, divrate)
                         .first;
-                if (pidx2 != -1) {
-                  for (cellidxx3 = 0; cellidxx3 <= cellidxx2; cellidxx3++) {
-                    for (cellidxy3 = 0; cellidxy3 < divrate; cellidxy3++) {
-                      pidx2 = l_list
-                                  ->getPCell(cellidxx + 1, cellidxy, cellidxx3,
-                                             cellidxy3)
-                                  .first;
-                      if (pidx2 != -1) {
-                        for (;;) {
-                          // 粒子間相互作用の計算
-                          xdata[pidx].interact_with(&(xdata[pidx2]));
-                          pidx2 = l_list->next_in_divcell(pidx2);
-                          if (pidx2 == -1) break;
-                        }
-                      }
-                    }
+            if (pidx2 != -1) {  // 対象セルに粒子がいなければ処理しない
+              for (cellidxx3 = 0; cellidxx3 <= cellidxx2; cellidxx3++) {
+                for (cellidxy3 = 0; cellidxy3 < divrate; cellidxy3++) {
+                  pidx2 = l_list
+                              ->getPCell(cellidxx + 1, cellidxy, cellidxx3,
+                                         cellidxy3)
+                              .first;
+                  if (pidx2 == -1) continue;
+                  for (;;) {
+                    // 粒子間相互作用の計算
+                    xdata[pidx].interact_with(&(xdata[pidx2]));
+                    pidx2 = l_list->next_in_divcell(pidx2);
+                    if (pidx2 == -1) break;
                   }
                 }
-                // paricles' interaction with the left below cell
-                pidx2 =
-                    l_list
-                        ->getPCell(cellidxx - 1, cellidxy + 1, divrate, divrate)
-                        .first;
-                if (pidx2 != -1) {
-                  for (cellidxx3 = cellidxx2; cellidxx3 < divrate;
-                       cellidxx3++) {
-                    for (cellidxy3 = 0; cellidxy3 <= cellidxy2; cellidxy3++) {
-                      pidx2 = l_list
-                                  ->getPCell(cellidxx - 1, cellidxy + 1,
-                                             cellidxx3, cellidxy3)
-                                  .first;
-                      if (pidx2 != -1) {
-                        for (;;) {
-                          // 粒子間相互作用の計算
-                          xdata[pidx].interact_with(&(xdata[pidx2]));
-                          pidx2 = l_list->next_in_divcell(pidx2);
-                          if (pidx2 == -1) break;
-                        }
-                      }
-                    }
-                  }
-                }
-
-                pidx2 =
-                    l_list->getPCell(cellidxx, cellidxy + 1, divrate, divrate)
-                        .first;  // paricles' interaction with the below cell
-                if (pidx2 != -1) {
-                  for (cellidxx3 = 0; cellidxx3 < divrate; cellidxx3++) {
-                    for (cellidxy3 = 0; cellidxy3 <= cellidxy2; cellidxy3++) {
-                      pidx2 = l_list
-                                  ->getPCell(cellidxx, cellidxy + 1, cellidxx3,
-                                             cellidxy3)
-                                  .first;
-                      if (pidx2 != -1) {
-                        for (;;) {
-                          // 粒子間相互作用の計算
-                          xdata[pidx].interact_with(&(xdata[pidx2]));
-                          pidx2 = l_list->next_in_divcell(pidx2);
-                          if (pidx2 == -1) break;
-                        }
-                      }
-                    }
-                  }
-                }
-                // paricles' interaction with the right below cell
-                pidx2 =
-                    l_list
-                        ->getPCell(cellidxx + 1, cellidxy + 1, divrate, divrate)
-                        .first;
-                if (pidx2 != -1) {
-                  for (cellidxx3 = 0; cellidxx3 <= cellidxx2; cellidxx3++) {
-                    for (cellidxy3 = 0; cellidxy3 <= cellidxy2; cellidxy3++) {
-                      pidx2 = l_list
-                                  ->getPCell(cellidxx + 1, cellidxy + 1,
-                                             cellidxx3, cellidxy3)
-                                  .first;
-                      if (pidx2 != -1) {
-                        for (;;) {
-                          // 粒子間相互作用の計算
-                          xdata[pidx].interact_with(&(xdata[pidx2]));
-                          pidx2 = l_list->next_in_divcell(pidx2);
-                          if (pidx2 == -1) break;
-                        }
-                      }
-                    }
-                  }
-                }
-
-                pidx = l_list->next_in_divcell(pidx);
-                if (pidx == -1) break;
               }
             }
+            // paricles' interaction with the left below cell
+            pidx2 =
+                l_list->getPCell(cellidxx - 1, cellidxy + 1, divrate, divrate)
+                    .first;
+            if (pidx2 != -1) {
+              for (cellidxx3 = cellidxx2; cellidxx3 < divrate; cellidxx3++) {
+                for (cellidxy3 = 0; cellidxy3 <= cellidxy2; cellidxy3++) {
+                  pidx2 = l_list
+                              ->getPCell(cellidxx - 1, cellidxy + 1, cellidxx3,
+                                         cellidxy3)
+                              .first;
+
+                  if (pidx2 == -1) continue;
+                  for (;;) {
+                    // 粒子間相互作用の計算
+                    xdata[pidx].interact_with(&(xdata[pidx2]));
+                    pidx2 = l_list->next_in_divcell(pidx2);
+                    if (pidx2 == -1) break;
+                  }
+                }
+              }
+            }
+
+            pidx2 = l_list->getPCell(cellidxx, cellidxy + 1, divrate, divrate)
+                        .first;  // paricles' interaction with the below cell
+            if (pidx2 != -1) {
+              for (cellidxx3 = 0; cellidxx3 < divrate; cellidxx3++) {
+                for (cellidxy3 = 0; cellidxy3 <= cellidxy2; cellidxy3++) {
+                  pidx2 = l_list
+                              ->getPCell(cellidxx, cellidxy + 1, cellidxx3,
+                                         cellidxy3)
+                              .first;
+                  if (pidx2 == -1) continue;
+                  for (;;) {
+                    // 粒子間相互作用の計算
+                    xdata[pidx].interact_with(&(xdata[pidx2]));
+                    pidx2 = l_list->next_in_divcell(pidx2);
+                    if (pidx2 == -1) break;
+                  }
+                }
+              }
+            }
+            // paricles' interaction with the right below cell
+            pidx2 =
+                l_list->getPCell(cellidxx + 1, cellidxy + 1, divrate, divrate)
+                    .first;
+            if (pidx2 != -1) {
+              for (cellidxx3 = 0; cellidxx3 <= cellidxx2; cellidxx3++) {
+                for (cellidxy3 = 0; cellidxy3 <= cellidxy2; cellidxy3++) {
+                  pidx2 = l_list
+                              ->getPCell(cellidxx + 1, cellidxy + 1, cellidxx3,
+                                         cellidxy3)
+                              .first;
+                  if (pidx2 == -1) continue;
+                  for (;;) {
+                    // 粒子間相互作用の計算
+                    xdata[pidx].interact_with(&(xdata[pidx2]));
+                    pidx2 = l_list->next_in_divcell(pidx2);
+                    if (pidx2 == -1) break;
+                  }
+                }
+              }
+            }
+
+            pidx = l_list->next_in_divcell(pidx);
+            if (pidx == -1) break;
           }
         }
       }
@@ -244,10 +234,12 @@ void datainit(Xsdata *xdata, double base, double base2, LinkedList *l_list) {
   }
 
   // 下から上に向かって左右均等に配置
-  double lx = width - 2 * dcell - 2 * rstd1;                // 実際の横幅
-  double ly = height - 2 * dcell - 2 * rstd1 - A;           // 実際の縦幅
-  maxx = static_cast<int>(sqrt(lx * num_particles2 / ly));  // 横に並べる粒子の数
-  maxy = static_cast<int>(sqrt(ly * num_particles2 / lx));  // 縦に並べる粒子の数
+  double lx = width - 2 * dcell - 2 * rstd1;       // 実際の横幅
+  double ly = height - 2 * dcell - 2 * rstd1 - A;  // 実際の縦幅
+  maxx =
+      static_cast<int>(sqrt(lx * num_particles2 / ly));  // 横に並べる粒子の数
+  maxy =
+      static_cast<int>(sqrt(ly * num_particles2 / lx));  // 縦に並べる粒子の数
   sx = lx / maxx;  // 粒子が占めるｘ幅
   sy = ly / maxy;  // 粒子が占めるｙ幅
   i = 0;
