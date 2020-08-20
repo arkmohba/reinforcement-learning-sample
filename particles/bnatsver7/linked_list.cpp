@@ -1,5 +1,7 @@
 #include "linked_list.h"
 
+using namespace std;
+
 LinkedList::LinkedList(int n_cell_x_, int n_cell_y_, int divrate_,
                        int num_particles_, int cell_size_)
     : n_cell_x(n_cell_x_),
@@ -27,6 +29,9 @@ LinkedList::LinkedList(int n_cell_x_, int n_cell_y_, int divrate_,
 
   // 壁際のセルを事前に登録
   set_near_wall_cell();
+
+  // 隣接セルの相対位置を登録
+  set_next_cells();
 }
 
 ParticleCell& LinkedList::getPCell(int nx, int ny, int mx, int my) {
@@ -132,6 +137,83 @@ void LinkedList::set_near_wall_cell() {
     for (int cellidxy = n_cell_y * 3 / 4; cellidxy <= n_cell_y; cellidxy++) {
       ParticleCell* pcell_p = &getPCell(cellidxx, cellidxy, divrate, divrate);
       near_wall_cells.push_back(pcell_p);
+    }
+  }
+}
+
+void LinkedList::set_next_cells() {
+  for (int cellidxx = 1; cellidxx < n_cell_x; cellidxx++) {
+    for (int cellidxy = 1; cellidxy < n_cell_y; cellidxy++) {
+      for (int cellidxx2 = 0; cellidxx2 < divrate; cellidxx2++) {
+        for (int cellidxy2 = 0; cellidxy2 < divrate; cellidxy2++) {
+          // Target Cell
+          ParticleCell* pcell_p =
+              &getPCell(cellidxx, cellidxy, cellidxx2, cellidxy2);
+          {
+            // Right cell
+            ParticleCell* next_parent_cell_p =
+                &getPCell(cellidxx + 1, cellidxy, divrate, divrate);
+            vector<ParticleCell*> next_child_cells;
+            for (int cellidxx3 = 0; cellidxx3 <= cellidxx2; cellidxx3++) {
+              for (int cellidxy3 = 0; cellidxy3 < divrate; cellidxy3++) {
+                ParticleCell* child_cell_p =
+                    &getPCell(cellidxx + 1, cellidxy, cellidxx3, cellidxy3);
+                next_child_cells.push_back(child_cell_p);
+              }
+            }
+            pcell_p->next_cells.push_back(
+                make_pair(next_parent_cell_p, next_child_cells));
+          }
+
+          // Left Below Cell
+          {
+            ParticleCell* next_parent_cell_p =
+                &getPCell(cellidxx - 1, cellidxy + 1, divrate, divrate);
+            vector<ParticleCell*> next_child_cells;
+            for (int cellidxx3 = cellidxx2; cellidxx3 < divrate; cellidxx3++) {
+              for (int cellidxy3 = 0; cellidxy3 <= cellidxy2; cellidxy3++) {
+                ParticleCell* child_cell_p =
+                    &getPCell(cellidxx - 1, cellidxy + 1, cellidxx3, cellidxy3);
+                next_child_cells.push_back(child_cell_p);
+              }
+            }
+            pcell_p->next_cells.push_back(
+                make_pair(next_parent_cell_p, next_child_cells));
+          }
+
+          {
+            // Below Cell
+            ParticleCell* next_parent_cell_p =
+                &getPCell(cellidxx, cellidxy + 1, divrate, divrate);
+            vector<ParticleCell*> next_child_cells;
+            for (int cellidxx3 = 0; cellidxx3 < divrate; cellidxx3++) {
+              for (int cellidxy3 = 0; cellidxy3 <= cellidxy2; cellidxy3++) {
+                ParticleCell* child_cell_p =
+                    &getPCell(cellidxx, cellidxy + 1, cellidxx3, cellidxy3);
+                next_child_cells.push_back(child_cell_p);
+              }
+            }
+            pcell_p->next_cells.push_back(
+                make_pair(next_parent_cell_p, next_child_cells));
+          }
+
+          {
+            // Right Below cell
+            ParticleCell* next_parent_cell_p =
+                &getPCell(cellidxx + 1, cellidxy + 1, divrate, divrate);
+            vector<ParticleCell*> next_child_cells;
+            for (int cellidxx3 = 0; cellidxx3 <= cellidxx2; cellidxx3++) {
+              for (int cellidxy3 = 0; cellidxy3 <= cellidxy2; cellidxy3++) {
+                ParticleCell* child_cell_p =
+                    &getPCell(cellidxx + 1, cellidxy + 1, cellidxx3, cellidxy3);
+                next_child_cells.push_back(child_cell_p);
+              }
+            }
+            pcell_p->next_cells.push_back(
+                make_pair(next_parent_cell_p, next_child_cells));
+          }
+        }
+      }
     }
   }
 }

@@ -12,18 +12,23 @@
 
 using namespace std;
 
-const int SHOW_FOR_EACH = 30;
+const int SHOW_FOR_EACH = 3;
 
 void init(Xsdata *xdata, Oscillator *osci, string window_name,
           LinkedList *l_list) {
   double base = 0;
   double base2 = 0;
+  cout << "Initilizing...";
   datainit(xdata, base, base2, l_list);
+  cout << " Done." << endl;
+
   // 最初に少し動かして地面に着かせる
+  cout << "Warm up Start ...";
   for (int i = 0; i < 7000; i++) {
     interaction(xdata, base, base2, l_list);
     partupdate(xdata);
   }
+  cout << " End" << endl;
 
   cv::namedWindow(window_name);
 }

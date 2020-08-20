@@ -1,13 +1,18 @@
 
 #pragma once
 
+#include <utility>
 #include <vector>
 
 #include "ball.h"
 
-typedef struct {
+
+class ParticleCell {
+ public:
   int first, last;
-} ParticleCell;
+  std::vector<std::pair<ParticleCell*, std::vector<ParticleCell*>>> next_cells;
+  ParticleCell() : first(-1), last(-1), next_cells(){}
+};
 
 class CellIndex {
  public:
@@ -40,6 +45,8 @@ class LinkedList {
   int index_coeff2_;  // セル番号計算の係数
   int index_coeff3_;  // セル番号計算の係数
 
+  void set_next_cells();
+  void set_near_wall_cell();
   std::vector<ParticleCell*> near_wall_cells;
 
  public:
@@ -53,6 +60,5 @@ class LinkedList {
   CellIndex getcellidx(double x, double y);
 
   std::vector<ParticleCell*>& get_near_wall_cell() { return near_wall_cells; }
-  void set_near_wall_cell();
   ~LinkedList();
 };
