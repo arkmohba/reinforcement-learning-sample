@@ -1,12 +1,12 @@
 #pragma once
 #define _USE_MATH_DEFINES
-#include <ball.h>
 #include <math.h>
 
 #include <cstdio>
 #include <cstdlib>
 #include <ctime>
 
+#include "ball.h"
 #include "linked_list.h"
 #include "physics_constants.h"
 
@@ -36,6 +36,8 @@ const double mstd = 2.0;                 // standard mass of particles
 const double rstd1 = 3.0;                // standard radius of particles
 const double Omeg = 40;                  // coefficient of dt
 const double dt = (2 * M_PI * sqrt(mstd / k) / Omeg);  // infinitesimal time
+
+const int WARMUP_START_UP = 7000;
 
 const int num_particles3 = num_particles;
 
