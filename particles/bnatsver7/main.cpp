@@ -6,20 +6,8 @@ const int SHOW_FOR_EACH = 30;
 
 int main(int argc, char *argv[]) {
   BNutsEnv* env;
-  try {
-    env = new BNutsEnv();
-  } catch (exception e) {
-    cout << e.what() << endl;
-    delete env;
-    return 1;
-  }
-  try {
+  env = new BNutsEnv();
   env->init();
-  } catch (exception e) {
-    cout << e.what() << endl;
-    delete env;
-    return 1;
-  }
 
   while (true) {
     for (int i = 0; i < SHOW_FOR_EACH; i++) {
@@ -31,5 +19,6 @@ int main(int argc, char *argv[]) {
     if (key == 27) break;
   }
 
+  delete env;
   return 0;
 }
