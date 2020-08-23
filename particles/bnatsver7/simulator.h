@@ -37,7 +37,7 @@ const double rstd1 = 3.0;                // standard radius of particles
 const double Omeg = 40;                  // coefficient of dt
 const double dt = (2 * M_PI * sqrt(mstd / k) / Omeg);  // infinitesimal time
 
-const int WARMUP_START_UP = 7000;
+const int WARMUP_START_UP = 4000;
 
 const int num_particles3 = num_particles;
 
