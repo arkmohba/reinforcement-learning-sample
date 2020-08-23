@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-set(TARGET "bnatsver7")
+set(TARGET "bnuts")
 # プロジェクト名を指定する
 project(${TARGET}  CXX)
 
