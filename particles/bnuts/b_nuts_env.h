@@ -7,7 +7,7 @@
 #include "simulator.h"
 
 class BNutsEnv {
- private:
+ public:
   Xsdata *xdata = nullptr;
   LinkedList *l_list = nullptr;
   std::string window_name = "";

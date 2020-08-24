@@ -1,3 +1,5 @@
+#include <algorithm>
+
 #include "b_nuts_env.h"
 #include "pybind11/numpy.h"
 #include "pybind11/pybind11.h"
@@ -55,11 +57,30 @@ py::array mat_to_nparray(cv::Mat& m) {
                    make_capsule(m));
 }
 
+const Xsdata* min_y(const Xsdata* a, const Xsdata* b) {
+  return (a->y < b->y) ? a : b;
+}
+
 class BNutsEnvPy : public BNutsEnv {
-  py::array get_image_nparray() { return mat_to_nparray(get_image()); }
+ public:
+  py::array get_image_array() { return mat_to_nparray(get_image()); }
+  double get_bnuts_y() { return xdata[0].y; }
+  double get_others_min_y() {
+    return std::min(xdata, xdata + num_particles, min_y)->y;
+  }
+  int get_width() { return width; }
+  int get_height() { return height; }
+  int get_channels() { return 3; }
+  int get_max_diff() { return A; }
 };
 
 PYBIND11_MODULE(bnutsenv, m) {
   m.doc() = "bnats env module";
-  // m.def("add", &add, "add two numbers");
+  pybind11::class_<BNutsEnvPy>(m, "BNutsEnvPy")
+      .def("update", &BNutsEnvPy::update)
+      .def("init", &BNutsEnvPy::init)
+      .def("get_image_array", &BNutsEnvPy::get_image_array)
+      .def("show_image", &BNutsEnvPy::show_image)
+      .def("get_bnuts_y", &BNutsEnvPy::get_bnuts_y)
+      .def("get_others_min_y", &BNutsEnvPy::get_others_min_y);
 }
