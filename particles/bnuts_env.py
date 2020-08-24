@@ -35,7 +35,7 @@ class BNutsEnv(gym.Env):
 
         # 報酬の最大最小
         self.reward_range = [-height, height]
-        self.reset()
+        self._reset()
         pass
 
     def _step(self, action):
@@ -45,17 +45,21 @@ class BNutsEnv(gym.Env):
 
 
         # TODO 画像データの取得
+        observation = None
 
         # TODO 報酬の取得（ブラジルナッツの位置と他の最高値を取得して差分を計算する）
         bnats_y = 500
-        other_max_y = 200
+        other_min_y = 200
+        reward = other_min_y - bnats_y
 
         # TODO 終了したかどうか
-        self._is_done(bnats_y, other_max_y)
+        self.done = self._is_done(bnats_y, other_min_y)
+        observation, reward, self.done, {}
         pass
 
     def _reset(self):
         self.steps = 0
+        self.done = False
         pass
 
     def _render(self, mode='human', close=False):
