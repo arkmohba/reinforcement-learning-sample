@@ -76,11 +76,16 @@ class BNutsEnvPy : public BNutsEnv {
 
 PYBIND11_MODULE(bnutsenv, m) {
   m.doc() = "bnats env module";
-  pybind11::class_<BNutsEnvPy>(m, "BNutsEnvPy")
+  py::class_<BNutsEnvPy>(m, "BNutsEnvCore")
+      .def(py::init<>())
       .def("update", &BNutsEnvPy::update)
       .def("init", &BNutsEnvPy::init)
       .def("get_image_array", &BNutsEnvPy::get_image_array)
       .def("show_image", &BNutsEnvPy::show_image)
       .def("get_bnuts_y", &BNutsEnvPy::get_bnuts_y)
-      .def("get_others_min_y", &BNutsEnvPy::get_others_min_y);
+      .def("get_others_min_y", &BNutsEnvPy::get_others_min_y)
+      .def("get_width", &BNutsEnvPy::get_width)
+      .def("get_height", &BNutsEnvPy::get_height)
+      .def("get_channels", &BNutsEnvPy::get_channels)
+      .def("get_max_diff", &BNutsEnvPy::get_max_diff);
 }
