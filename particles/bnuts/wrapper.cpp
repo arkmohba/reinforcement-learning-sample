@@ -63,6 +63,8 @@ const Xsdata* min_y(const Xsdata* a, const Xsdata* b) {
 
 class BNutsEnvPy : public BNutsEnv {
  public:
+  void init();
+  void update_with_base(double base);
   py::array get_image_array() { return mat_to_nparray(get_image()); }
   double get_bnuts_y() { return xdata[0].y; }
   double get_others_min_y() {
@@ -74,11 +76,24 @@ class BNutsEnvPy : public BNutsEnv {
   int get_max_diff() { return A; }
 };
 
+void BNutsEnvPy::init() {
+  datainit(xdata, 0, 0, l_list);
+  for (int i = 0; i < WARMUP_START_UP; i++) {
+    interaction(xdata, 0, 0, l_list);
+    partupdate(xdata);
+  }
+}
+
+void BNutsEnvPy::update_with_base(double base) {
+  interaction(xdata, base, 0, l_list);
+  partupdate(xdata);
+}
+
 PYBIND11_MODULE(bnutsenv, m) {
   m.doc() = "bnats env module";
   py::class_<BNutsEnvPy>(m, "BNutsEnvCore")
       .def(py::init<>())
-      .def("update", &BNutsEnvPy::update)
+      .def("update_with_base", &BNutsEnvPy::update_with_base)
       .def("init", &BNutsEnvPy::init)
       .def("get_image_array", &BNutsEnvPy::get_image_array)
       .def("show_image", &BNutsEnvPy::show_image)

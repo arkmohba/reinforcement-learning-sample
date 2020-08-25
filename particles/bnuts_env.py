@@ -1,3 +1,4 @@
+import particles
 import sys
 
 import gym
@@ -26,8 +27,10 @@ class BNutsEnv(gym.Env):
         self.input_shape = [width, height, channel]
 
         # 実際の環境からmax_diffを取得する
+        # TODO 場合によっては直接高さを指定するのではなく差分だけを指定する方式に変更する
         self.max_diff = self.env_body.get_max_diff()
         self.separate = 10  # 更に10倍に分割
+
         # 行動の個数
         self.action_space = gym.spaces.Discrete(
             int(self.max_diff*self.separate))
@@ -47,11 +50,12 @@ class BNutsEnv(gym.Env):
     def step(self, action):
         """actionは数字"""
         # 行動値
+        # TODO 場合によっては直接高さを指定するのではなく差分だけを指定する方式に変更する
         base = action / self.separate
 
         # 更新
-        # TODO 行動値を入力する
-        self.env_body.update()
+        # 行動値を入力する
+        self.env_body.update_with_base(base)
 
         # 画像データの取得
         observation = self.env_body.get_image_array()
@@ -69,6 +73,7 @@ class BNutsEnv(gym.Env):
         self.steps = 0
         self.done = False
         self.env_body.init()
+        return self.env_body.get_image_array()
 
     def render(self, mode='human', close=False):
         img = self.env_body.get_image_array()
