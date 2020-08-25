@@ -16,7 +16,6 @@ target_include_directories(
   PUBLIC  ${OpenCV_INCLUDE_DIRS}
 )
 # ライブラリディレクトリの指定
-# target_link_directories(${LIBNAME} PRIVATE "${OpenCVDIR}\\x64\\vc15\\lib\\" )
 # リンクするライブラリ名指定
 target_link_libraries(${LIBNAME}
 ${OpenCV_LIBS}
@@ -33,7 +32,6 @@ target_include_directories(
   PUBLIC  ${OpenCV_INCLUDE_DIRS}
 )
 # ライブラリディレクトリの指定
-# target_link_directories(${MAIN} PRIVATE "${OpenCVDIR}\\x64\\vc15\\lib\\" )
 # リンクするライブラリ名指定
 target_link_libraries(${MAIN}
 PRIVATE
@@ -53,7 +51,6 @@ target_include_directories(
   PUBLIC  ${OpenCV_INCLUDE_DIRS}
 )
 # ライブラリディレクトリの指定
-# target_link_directories(${PYBINDPROJ} PRIVATE "${OpenCVDIR}\\x64\\vc15\\lib\\" )
 # リンクするライブラリ名指定
 target_link_libraries(${PYBINDPROJ}
 PRIVATE
