@@ -20,7 +20,7 @@
 ```
 $ mkdir build
 $ cd build
-$ cmake .. 
+$ cmake -A x64 .. 
 $ cmake --build .
 ```
 
