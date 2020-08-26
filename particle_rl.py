@@ -3,7 +3,7 @@ import numpy as np
 import gym
 
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, Activation, Flatten, Convolution2D, Dropout, MaxPool2D
+from tensorflow.keras.layers import Dense, Activation, Flatten, Convolution2D, Dropout, MaxPool2D, Input, Reshape
 from tensorflow.keras.optimizers import Adam
 import matplotlib.pyplot as plt
 
@@ -26,15 +26,17 @@ def initilize_env(env_name):
 def create_model(space_shape, nb_actions):
     # Next, we build a very simple model.
     model = Sequential()
-    model.add(Convolution2D(32, 3, activation='relu', input_shape=space_shape))
+    model.add(Input((1,) + space_shape))
+    model.add(Reshape(space_shape))
+    model.add(Convolution2D(32, 3, activation='relu'))
     model.add(MaxPool2D())
-    model.add(Convolution2D(32, 3, activation='relu', input_shape=space_shape))
+    model.add(Convolution2D(32, 3, activation='relu'))
     model.add(MaxPool2D())
-    model.add(Convolution2D(32, 3, activation='relu', input_shape=space_shape))
+    model.add(Convolution2D(32, 3, activation='relu'))
     model.add(MaxPool2D())
-    model.add(Convolution2D(32, 3, activation='relu', input_shape=space_shape))
+    model.add(Convolution2D(32, 3, activation='relu'))
     model.add(MaxPool2D())
-    model.add(Convolution2D(16, 3, activation='relu', input_shape=space_shape))
+    model.add(Convolution2D(16, 3, activation='relu'))
     model.add(Flatten())
     model.add(Dense(256))
     model.add(Activation('relu'))
@@ -60,16 +62,17 @@ def do_train(dqn: DQNAgent, env, save_path):
     # Okay, now it's time to learn something! We visualize the training here for show, but this
     # slows down training quite a lot. You can always safely abort the training prematurely using
     # Ctrl + C.
-    history = dqn.fit(env, nb_steps=200, visualize=False, verbose=0)
+    history = dqn.fit(env, nb_steps=200, visualize=False, verbose=1)
     history = history.history
 
     # After training is done, we save the final weights.
     dqn.save_weights(save_path, overwrite=True)
 
     # Finally, evaluate our algorithm for 5 episodes.
-    dqn.test(env, nb_episodes=5, visualize=True)
+    dqn.test(env, nb_episodes=1, visualize=True)
 
     return history
+
 
 def demo(dqn: DQNAgent, env, model_path):
     dqn.load_weights(model_path)

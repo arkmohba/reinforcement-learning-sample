@@ -11,7 +11,7 @@ from . import BNutsEnvCore
 
 class BNutsEnv(gym.Env):
     metadata = {'render.modes': ['human', 'ansi']}
-    MAX_STEPS = 100000
+    MAX_STEPS = 10000
 
     def __init__(self):
         self.steps = 0
@@ -23,7 +23,7 @@ class BNutsEnv(gym.Env):
         width = self.env_body.get_width()
         height = self.env_body.get_height()
         channel = self.env_body.get_channels()
-        self.input_shape = [width, height, channel]
+        self.input_shape = [height, width, channel]
 
         # 実際の環境からmax_diffを取得する
         # TODO 場合によっては直接高さを指定するのではなく差分だけを指定する方式に変更する
