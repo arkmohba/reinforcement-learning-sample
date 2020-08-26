@@ -5,7 +5,6 @@ import gym
 import numpy as np
 import gym.spaces
 
-import cv2
 from gym.envs.classic_control import rendering
 from . import BNutsEnvCore
 
@@ -78,8 +77,6 @@ class BNutsEnv(gym.Env):
     def render(self, mode='human', close=False):
         img = self.env_body.get_image_array()
         self.viewer.imshow(img[:, :, ::-1])
-        # print(img.shape)
-        # cv2.imshow('image', img)
 
     def _is_done(self, bnats_y, other_max_y):
         if other_max_y > bnats_y:
