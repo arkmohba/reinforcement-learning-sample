@@ -28,17 +28,19 @@ def create_model(space_shape, nb_actions):
     model = Sequential()
     model.add(Input((1,) + space_shape))
     model.add(Reshape(space_shape))
-    model.add(Convolution2D(32, 3, activation='relu'))
-    model.add(MaxPool2D())
-    model.add(Convolution2D(32, 3, activation='relu'))
-    model.add(MaxPool2D())
-    model.add(Convolution2D(32, 3, activation='relu'))
-    model.add(MaxPool2D())
-    model.add(Convolution2D(32, 3, activation='relu'))
-    model.add(MaxPool2D())
     model.add(Convolution2D(16, 3, activation='relu'))
+    model.add(Convolution2D(32, 3, activation='relu'))
+    model.add(Convolution2D(64, 3, activation='relu'))
+    model.add(MaxPool2D())
+    model.add(Convolution2D(64, 3, activation='relu'))
+    model.add(MaxPool2D())
+    model.add(Convolution2D(64, 3, activation='relu'))
+    model.add(MaxPool2D())
+    model.add(Convolution2D(64, 3, activation='relu'))
+    model.add(Convolution2D(32, 3, activation='relu'))
     model.add(Flatten())
-    model.add(Dense(256))
+    model.add(Dense(32))
+    model.add(Dense(32))
     model.add(Activation('relu'))
     model.add(Dropout(0.5))
     model.add(Dense(nb_actions))
@@ -62,7 +64,7 @@ def do_train(dqn: DQNAgent, env, save_path):
     # Okay, now it's time to learn something! We visualize the training here for show, but this
     # slows down training quite a lot. You can always safely abort the training prematurely using
     # Ctrl + C.
-    history = dqn.fit(env, nb_steps=200, visualize=False, verbose=1)
+    history = dqn.fit(env, nb_steps=200000, visualize=False, verbose=1)
     history = history.history
 
     # After training is done, we save the final weights.
