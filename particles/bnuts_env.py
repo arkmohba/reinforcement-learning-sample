@@ -10,6 +10,7 @@ from . import BNutsEnvCore
 
 
 class BNutsEnv(gym.Env):
+    """床の高さを直接指定する形式のシミュレーション"""
     metadata = {'render.modes': ['human', 'ansi']}
     MAX_STEPS = 10000
 
@@ -50,8 +51,7 @@ class BNutsEnv(gym.Env):
         """actionは数字"""
         # 行動値
         # TODO 場合によっては直接高さを指定するのではなく差分だけを指定する方式に変更する
-        base = action / self.separate
-
+        base = self.get_base(action)
         # 更新
         # 行動値を入力する
         self.env_body.update_with_base(base)
@@ -67,6 +67,9 @@ class BNutsEnv(gym.Env):
         # 終了したかどうか
         self.done = self._is_done(bnats_y, other_min_y)
         return observation, reward, self.done, {}
+
+    def get_base(self, action):
+        return action / self.separate
 
     def reset(self):
         self.steps = 0

@@ -12,7 +12,7 @@ from rl.policy import BoltzmannQPolicy
 from rl.memory import SequentialMemory
 
 
-ENV_NAME = "Bnuts-v0"
+ENV_NAME = "Bnuts-v1"
 
 
 # Get the environment and extract the number of actions.
