@@ -13,6 +13,7 @@ def main():
 
     final_reward = 0
     while True:
+        env.render()
         k = cv2.waitKey(0) & 0xFF
         action = 0
         if k == ord('u'):
@@ -25,10 +26,11 @@ def main():
             action = 3
         elif k == ord('q'):
             break
+        else:
+            continue
         obs, reward, done, _ = env.step(action)
         final_reward += reward
         print("reward:", reward)
-        env.render()
         if done:
             print("Complete!")
             break
