@@ -3,6 +3,7 @@ import sys
 import gym
 import numpy as np
 import gym.spaces
+import cv2
 
 from gym.envs.classic_control import rendering
 
@@ -69,6 +70,7 @@ class MapRootEnv(gym.Env):
             if g_x == s_x and g_y == s_y:  # 終了位置
                 continue
             root_map[g_y][g_x][1] = 1
+            break
 
         # 補給場所
         for _ in range(self.RESTORE_POINTS):
@@ -127,7 +129,7 @@ class MapRootEnv(gym.Env):
         # 移動のコストを追加
         # TODO できれば道の高低差をコストに入れたい
         diff = next_pos - pos
-        if diff.sum > 0:
+        if diff.sum() > 0:
             rewards -= 0.5
 
         # 時間経過で少しマイナス
@@ -170,10 +172,19 @@ class MapRootEnv(gym.Env):
 
     def render(self, mode='human', close=False):
         img = self.map_to_image(self.map)
-        self.viewer.imshow(img[:, :, ::-1])
+        img = cv2.resize(img, (img.shape[1]*4, img.shape[0]*4), interpolation=cv2.INTER_NEAREST)
+        cv2.imshow('image', img)
+    
+    def render_trailed_image(self):
+        img = self.map_to_image(self.map)
+        for y,x in self.trail:
+            img[y][x] = self.BLACK
+        img = cv2.resize(img, (img.shape[1]*4, img.shape[0]*4), interpolation=cv2.INTER_NEAREST)
+        cv2.imshow('image', img)
+
 
     def _close(self):
-        pass
+        cv2.destroyAllWindows()
 
     def _seed(self, seed=None):
         pass
