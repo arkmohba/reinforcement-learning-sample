@@ -131,7 +131,8 @@ cdef class MapRootEnvCy:
         # 移動のコストを追加
         # TODO できれば道の高低差をコストに入れたい
         cdef np.ndarray[np.int_t, ndim=1] diff = next_pos - pos
-        if diff.sum() < 1:
+        if np.linalg.norm(diff) < 1:
+            # print(diff)
             # 移動していなければマイナス
             rewards -= 0.5
 
