@@ -1,5 +1,4 @@
 
-from tqdm import tqdm
 import cv2
 from map_env_cy import MapRootEnv
 import time
