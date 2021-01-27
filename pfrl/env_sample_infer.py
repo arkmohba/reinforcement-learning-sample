@@ -4,7 +4,7 @@ import cv2
 import time
 from pfrl import nn as pnn
 from pfrl import agents, replay_buffers
-from map_env import MapRootEnv
+from map_env_cy import MapRootEnv
 from train_rainbow import MyDistributionalDuelingDQN
 
 def main():
@@ -47,6 +47,8 @@ def main():
                 print("Complete!")
                 break
         print("final reward:", final_reward)
+        trail = env.env.get_trail()
+        print("trail len: ", len(trail))
         env.render_trailed_image()
         cv2.waitKey(0)
 
