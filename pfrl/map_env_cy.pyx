@@ -85,16 +85,16 @@ cdef class MapRootEnvCy:
             root_map[r_y][r_x][2] = 1
         return np.array([s_y, s_x]), np.array([s_y, s_x]), np.array([g_y, g_x]), root_map
 
-    cdef map_to_image(self, np.ndarray[np.int_t, ndim=3] root_map):
+    def map_to_image(self):
         cdef np.ndarray[np.int_t, ndim=3] img = np.ones([HEIGHT, WIDTH, 3], dtype=np.int) * 255
         # 補給場所は緑
-        img[root_map[:, :, 2] == 1] = GREEN
+        img[self.map[:, :, 2] == 1] = GREEN
         # 開始地点は青
-        img[root_map[:, :, 0] == 1] = BLUE
+        img[self.map[:, :, 0] == 1] = BLUE
         # 終了地点は赤
-        img[root_map[:, :, 1] == 1] = RED
+        img[self.map[:, :, 1] == 1] = RED
         # 現在位置は黒
-        img[root_map[:, :, 3] == 1] = BLACK
+        img[self.map[:, :, 3] == 1] = BLACK
         return img.astype(np.uint8)
 
     def reset(self):
@@ -178,13 +178,13 @@ cdef class MapRootEnvCy:
         return self.action_step(action)
 
     def render(self, mode='human', close=False):
-        img = self.map_to_image(self.map)
+        img = self.map_to_image()
         img = cv2.resize(
             img, (img.shape[1]*4, img.shape[0]*4), interpolation=cv2.INTER_NEAREST)
         cv2.imshow('image', img)
 
     def render_trailed_image(self):
-        img = self.map_to_image(self.map)
+        img = self.map_to_image()
         for y, x in self.trail:
             img[y][x] = BLACK
         img = cv2.resize(
@@ -196,6 +196,9 @@ cdef class MapRootEnvCy:
 
     def _seed(self, seed=None):
         pass
+    
+    def get_trail(self):
+        return self.trail
 
 class MapRootEnv(gym.Env):
     SCALE=3
@@ -233,10 +236,18 @@ class MapRootEnv(gym.Env):
         return obs, reward, done, tmp
     
     def render(self, mode='human', close=False):
-        self.env.render(mode, close)
+        img = self.env.map_to_image()
+        img = cv2.resize(
+            img, (img.shape[1]*self.SCALE*4, img.shape[0]*self.SCALE*4), interpolation=cv2.INTER_NEAREST)
+        cv2.imshow('image', img)
     
     def render_trailed_image(self):
-        self.env.render_trailed_image()
+        img = self.env.map_to_image()
+        for y, x in self.env.get_trail():
+            img[y][x] = BLACK
+        img = cv2.resize(
+            img, (img.shape[1]*self.SCALE*4, img.shape[0]*self.SCALE*4), interpolation=cv2.INTER_NEAREST)
+        cv2.imshow('image', img)
     
     def _close(self):
         self.env._close()
