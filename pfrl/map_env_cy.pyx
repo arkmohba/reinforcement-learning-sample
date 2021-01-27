@@ -245,7 +245,7 @@ class MapRootEnv(gym.Env):
     def render_trailed_image(self):
         img = self.env.map_to_image()
         for y, x in self.env.get_trail():
-            img[y][x] = BLACK
+            img[y][x] = (img[y][x] + BLACK) / 2
         img = cv2.resize(
             img, (img.shape[1]*self.SCALE*4, img.shape[0]*self.SCALE*4), interpolation=cv2.INTER_NEAREST)
         cv2.imshow('image', img)
