@@ -5,7 +5,6 @@ import numpy as np
 import gym.spaces
 import cv2
 
-from gym.envs.classic_control import rendering
 
 cimport numpy as np
 
@@ -28,10 +27,11 @@ cdef class MapRootEnvCy:
     """経路探索"""
     metadata = {'render.modes': ['human', 'ansi']}
     FIELD_TYPES = [
-        'S',
-        'G',
-        'R',
-        'N'
+        'S',  # Start
+        'G',  # Goal
+        'R',  # Restore
+        'N',  # Now
+        'T'  # Trail
     ]
     
 
@@ -71,6 +71,7 @@ cdef class MapRootEnvCy:
         s_x, s_y = self.random_pos()
         root_map[s_y][s_x][0] = 1  # 開始位置
         root_map[s_y][s_x][3] = 1  # 現在位置
+        root_map[s_y][s_x][4] = 1  # 通り過ぎた位置
 
         while True:
             g_x, g_y = self.random_pos()
@@ -118,7 +119,7 @@ cdef class MapRootEnvCy:
             # 開始地点に戻ってきたらマイナス
             rewards -= 1
         elif state[1] == 1:
-            # 終了地点に戻ってきたらプラス
+            # 終了地点にきたらプラス
             rewards += 100
         if state[2] == 1:
             # 補給地点に来れたらプラス
@@ -132,12 +133,15 @@ cdef class MapRootEnvCy:
         # TODO できれば道の高低差をコストに入れたい
         cdef np.ndarray[np.int_t, ndim=1] diff = next_pos - pos
         if np.linalg.norm(diff) < 1:
-            # print(diff)
             # 移動していなければマイナス
             rewards -= 0.5
 
         # 時間経過で少しマイナス
-        rewards -= 0.2
+        rewards -= 0.1
+
+        # 来たことのあるマスに来たらマイナス
+        if state[4] == 1:
+            rewards -= 0.5
 
         return rewards
 
@@ -145,6 +149,8 @@ cdef class MapRootEnvCy:
         # 移動
         self.map[pos[0]][pos[1]][3] = 0
         self.map[next_pos[0]][next_pos[1]][3] = 1
+        # 新しい軌跡
+        self.map[next_pos[0]][next_pos[1]][4] = 1
 
     cdef _is_done(self, np.ndarray[np.int_t, ndim=1] pos):
         if np.all(pos == self.goal):
