@@ -35,20 +35,23 @@ class TBLogger:
             message = args[0] % args[1:]
         else:
             message = args[0]
-        if "outdir" in message:
-            vals = parse.parse(self.STEP_F, message)
-            self.writer.add_scalar("base_info/episode", vals[2], vals[1])
-            self.writer.add_scalar("base_info/R", vals[3], vals[1])
-        elif "statistics" in message:
-            vals = parse.parse(self.STATIC_F, message)
-            if vals is not None:
-                self.writer.add_scalar("statics/average_q", vals[0], vals[2])
-                self.writer.add_scalar("statics/average_loss", vals[1], vals[2])
-                self.writer.add_scalar("statics/n_updates", vals[3], vals[2])
-                self.writer.add_scalar("statics/rlen", vals[4], vals[2])
-        else:
+        try:
+            if "outdir" in message:
+                vals = parse.parse(self.STEP_F, message)
+                self.writer.add_scalar("base_info/episode", vals[2], vals[1])
+                self.writer.add_scalar("base_info/R", vals[3], vals[1])
+            elif "statistics" in message:
+                vals = parse.parse(self.STATIC_F, message)
+                if vals is not None:
+                    self.writer.add_scalar("statics/average_q", vals[0], vals[2])
+                    self.writer.add_scalar("statics/average_loss", vals[1], vals[2])
+                    self.writer.add_scalar("statics/n_updates", vals[3], vals[2])
+                    self.writer.add_scalar("statics/rlen", vals[4], vals[2])
+            else:
+                logging.info(message)
+                pass
+        except TypeError:
             logging.info(message)
-            pass
 
 
 class MyDistributionalDuelingDQN(DistributionalDuelingDQN):
