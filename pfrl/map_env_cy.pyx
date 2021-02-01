@@ -152,7 +152,7 @@ cdef class MapRootEnvCy:
             rewards -= 0.5
 
         # 疲労度によりマイナス
-        rewards -= 0.05*self.tiredness
+        rewards -= 0.05*np.sqrt(self.tiredness)
 
         return rewards
 
