@@ -138,7 +138,7 @@ def main():
     parser.add_argument("--load", type=str, default=None)
     parser.add_argument("--eval-epsilon", type=float, default=0.0)
     parser.add_argument("--noisy-net-sigma", type=float, default=0.2)
-    parser.add_argument("--steps", type=int, default=5 * 10 ** 3)
+    parser.add_argument("--steps", type=int, default=5 * 10 ** 7)
     parser.add_argument(
         "--max-frames",
         type=int,
