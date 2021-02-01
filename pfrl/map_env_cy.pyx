@@ -31,7 +31,8 @@ cdef class MapRootEnvCy:
         'G',  # Goal
         'R',  # Restore
         'N',  # Now
-        'T'  # Trail
+        'T',  # Trail
+        'tiredness'
     ]
     
 
@@ -41,6 +42,7 @@ cdef class MapRootEnvCy:
     cdef np.ndarray pos, start, goal
     cdef np.ndarray map
     cdef list trail
+    cdef int tiredness
 
 
     def __init__(self):
@@ -54,6 +56,7 @@ cdef class MapRootEnvCy:
         self.input_shape[0] = height
         self.input_shape[1] = width
         self.input_shape[2] = channel
+        self.tiredness = 0
 
         # 報酬の最大最小
         self.reset()
@@ -98,12 +101,18 @@ cdef class MapRootEnvCy:
         img[self.map[:, :, 3] == 1] = BLACK
         return img.astype(np.uint8)
 
+    cdef generate_obs(self):
+        new_map = self.map.astype(np.float32)
+        new_map[:, :, -1] = self.tiredness
+        return new_map
+
     def reset(self):
         self.steps = 0
         self.done = 0
         self.pos, self.start, self.goal, self.map = self.generate_map()
         self.trail = [self.pos]
-        return self.map
+        self.tiredness = 0
+        return self.generate_obs()
 
     cdef next_pos(self, int index, np.ndarray[np.int_t, ndim=1] pos):
         cdef np.ndarray[np.int_t, ndim=1] next_position = pos + NEXTS[index]
@@ -143,6 +152,9 @@ cdef class MapRootEnvCy:
         if state[4] == 1:
             rewards -= 0.5
 
+        # 疲労度によりマイナス
+        rewards -= 0.05*self.tiredness
+
         return rewards
 
     cdef update_map(self, np.ndarray[np.int_t, ndim=1] pos, np.ndarray[np.int_t, ndim=1] next_pos):
@@ -151,6 +163,11 @@ cdef class MapRootEnvCy:
         self.map[next_pos[0]][next_pos[1]][3] = 1
         # 新しい軌跡
         self.map[next_pos[0]][next_pos[1]][4] = 1
+        # 補給場所だったら疲労回復、なければ疲労追加
+        if self.map[next_pos[0]][next_pos[1]][2] == 1:
+            self.tiredness = 0
+        else:
+            self.tiredness += 1
 
     cdef _is_done(self, np.ndarray[np.int_t, ndim=1] pos):
         if np.all(pos == self.goal):
@@ -174,12 +191,10 @@ cdef class MapRootEnvCy:
 
         self.pos = next_pos
         self.trail.append(self.pos)
-        # 画像データの取得
-        cdef np.ndarray[np.int_t, ndim=3] observation = self.map
 
         # 終了したかどうか
         self.done = self._is_done(self.pos)
-        return observation, reward, bool(self.done), {}
+        return self.generate_obs(), reward, bool(self.done), {}
 
     def step(self, action: int):
         return self.action_step(action)
