@@ -31,8 +31,7 @@ cdef class MapRootEnvCy:
         'G',  # Goal
         'R',  # Restore
         'N',  # Now
-        'T',  # Trail
-        'tiredness'
+        'T'  # Trail
     ]
     
 
@@ -102,9 +101,9 @@ cdef class MapRootEnvCy:
         return img.astype(np.uint8)
 
     cdef generate_obs(self):
-        new_map = self.map.astype(np.float32)
-        new_map[:, :, -1] = self.tiredness
-        return new_map
+        new_map = self.map
+        # new_map[:, :, -1] = self.tiredness
+        return (new_map, self.tiredness)
 
     def reset(self):
         self.steps = 0
@@ -242,20 +241,21 @@ class MapRootEnv(gym.Env):
         self.reward_range = [-1.7, 11.]
     
     def reset(self):
-        obs = self.env.reset()
+        obs, tiredness = self.env.reset()
         obs = cv2.resize(
             obs, (obs.shape[1]*self.SCALE, obs.shape[0]*self.SCALE), interpolation=cv2.INTER_NEAREST)
         obs = obs.transpose(2, 0, 1).astype(np.float32)
-        return obs
+        return (obs, tiredness)
     
     def step(self, action):
         # もとのマップをSCALE倍のサイズにして返す
         obs, reward, done, tmp = self.env.step(action)
+        obs, tiredness = obs
         obs = cv2.resize(
             obs, (obs.shape[1]*self.SCALE, obs.shape[0]*self.SCALE), interpolation=cv2.INTER_NEAREST)
         obs = obs.transpose(2, 0, 1).astype(np.float32)
 
-        return obs, reward, done, tmp
+        return (obs, tiredness), reward, done, tmp
     
     def render(self, mode='human', close=False):
         img = self.env.map_to_image()

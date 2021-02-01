@@ -6,18 +6,17 @@ import argparse
 import json
 import os
 
-import numpy as np
 import torch
 from torch.utils.tensorboard import SummaryWriter
+import torch.nn as nn
+import torch.nn.functional as F
 
-import pfrl
+from pfrl import action_value
 from pfrl import agents, experiments, explorers
 from pfrl import nn as pnn
 from pfrl import replay_buffers, utils
 from pfrl.q_functions import DistributionalDuelingDQN
-from pfrl.wrappers import atari_wrappers
 from map_env_cy import MapRootEnv
-import torch.nn as nn
 import datetime
 import parse
 import logging
@@ -84,7 +83,36 @@ class MyDistributionalDuelingDQN(DistributionalDuelingDQN):
         )
         # self.main_stream = nn.Linear(64*9*9, 1024)
         # self.main_stream = nn.Linear(64*2*2, 1024)
-        self.main_stream = nn.Linear(64*5*5, 1024)
+        self.main_stream = nn.Linear(64*5*5+1, 1024)
+    
+    def forward(self, x):
+        x, tiredness = x
+        h = x
+        for layer in self.conv_layers:
+            h = self.activation(layer(h))
+
+        # Advantage
+        # print(h.shape)
+        batch_size = x.shape[0]
+
+        h = h.view(batch_size, -1)
+        h = torch.cat((h, tiredness.unsqueeze(1)), dim=1)
+        h = self.activation(self.main_stream(h))
+        h_a, h_v = torch.chunk(h, 2, dim=1)
+        ya = self.a_stream(h_a).reshape((batch_size, self.n_actions, self.n_atoms))
+
+        mean = ya.sum(dim=1, keepdim=True) / self.n_actions
+
+        ya, mean = torch.broadcast_tensors(ya, mean)
+        ya -= mean
+
+        # State value
+        ys = self.v_stream(h_v).reshape((batch_size, 1, self.n_atoms))
+        ya, ys = torch.broadcast_tensors(ya, ys)
+        q = F.softmax(ya + ys, dim=2)
+
+        self.z_values = self.z_values.to(x.device)
+        return action_value.DistributionalDiscreteActionValue(q, self.z_values)
 
 
 def main():
@@ -110,7 +138,7 @@ def main():
     parser.add_argument("--load", type=str, default=None)
     parser.add_argument("--eval-epsilon", type=float, default=0.0)
     parser.add_argument("--noisy-net-sigma", type=float, default=0.2)
-    parser.add_argument("--steps", type=int, default=5 * 10 ** 7)
+    parser.add_argument("--steps", type=int, default=5 * 10 ** 3)
     parser.add_argument(
         "--max-frames",
         type=int,
@@ -238,8 +266,8 @@ def main():
             logger=TBLogger(args.outdir)
         )
 
-        dir_of_best_network = os.path.join(args.outdir, "best")
-        agent.load(dir_of_best_network)
+        # dir_of_best_network = os.path.join(args.outdir, "best")
+        # agent.load(dir_of_best_network)
 
         # run 200 evaluation episodes, each capped at 30 mins of play
         stats = experiments.evaluator.eval_performance(
